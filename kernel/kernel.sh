@@ -127,7 +127,7 @@ for line in "${input_data[@]}"; do
     pkgver=$(echo "$gives" | perl -nle'print $& if m{([0-9]+\.[0-9]+)}') # Get the first set of numbers
     rc_number="$(echo "$package" | perl -nle'print $& if m{(rc[0-9]+)}')" # Get the 'rc' string
     if ! [[ "${rc_number}" == "" ]]; then
-      rc_number="-${rc_number}"
+      rc_number="~${rc_number}"
     fi
     pkgver+="${rc_number}" # Append "-rc#" to pkgver
     pkgver=${pkgver//.0/} # Remove '.0' from pkgver
