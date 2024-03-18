@@ -236,3 +236,11 @@ div[class*="modeSelected"] > div  > a[data-list-item-id*="channels"]{
 div[class*="modeSelected"] > div  > a[data-list-item-id*="channels"] svg, div:hover > a[data-list-item-id*="channels"] svg {
   color: var(--dracula-white) !important;
 }
+
+span[class="item_f9d377"] {
+	background-color: var(--dracula-foreground);
+}
+
+span[style*="opacity: 1; height: 40px; transform: none;"] {
+  background-color: var(--dracula-accent);
+}
