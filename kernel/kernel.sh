@@ -348,5 +348,5 @@ esac
 git add packages/linux*/*pacscript
 git commit -m "upd(${gitker_input}): \`$original_old_pkgver\` -> \`$pkgver\`" && \
 if ${newbranch} && [[ -n ${gitker_remote} ]]; then
-  git push ${gitker_remote} HEAD:${gitker_branch}
+  git push ${gitker_remote} HEAD:refs/heads/${gitker_branch/\~/}
 fi
