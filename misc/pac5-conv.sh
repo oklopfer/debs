@@ -52,9 +52,9 @@ update_carch_cases() {
         if [[ $in_case_block == true ]]; then
             if [[ $line =~ ([a-z0-9]+)\) ]]; then
                 current_arch=${BASH_REMATCH[1]}
-            elif [[ $line =~ source\=\(\"([^\"]+)\"\) ]]; then
+            elif [[ $line =~ source\=\(\"([^\"]+)\"\) ]] || [[ $line =~ source\=\(\'([^\"]+)\'\) ]]; then
                 declare_lines+="source_${current_arch}=(\"${BASH_REMATCH[1]}\")\n"
-            elif [[ $line =~ sha256sums\=\(\"([^\"]+)\"\) ]]; then
+            elif [[ $line =~ sha256sums\=\(\"([^\"]+)\"\) ]] || [[ $line =~ sha256sums\=\(\'([^\"]+)\'\) ]]; then
                 declare_lines+="sha256sums_${current_arch}=(\"${BASH_REMATCH[1]}\")\n"
             fi
         else
@@ -240,6 +240,7 @@ with open("packagelist", 'r') as plist:
         subst(ppath, r'^url=(.*)', r'source=(\1)')
         subst(ppath, r'^hash=(.*)', r'sha256sums=(\1)')
         subst(ppath, r'\ \ url=(.*)', r'  source=(\1)')
+        subst(ppath, r'\\$\{url(?<!\_)', r'\${source[0]')
         subst(ppath, r'\ \ hash=(.*)', r'  sha256sums=(\1)')
         subst(ppath, r'^maintainer=(.*)', r'maintainer=(\1)')
         subst(ppath, r'^replace=\((.*)\)', r'replaces=(\1)')
@@ -265,7 +266,7 @@ update_wget_stuff() {
         if [[ ! " ${packageArray[*]} " =~ " ${line} " ]]; then
             packageArray+=("$line")
         fi
-    done < <(grep " wget\| curl" packages/*/*pacscript | grep -v 'O "${i}"' | grep -v '\${s}' | grep -v 'skiaurl' | grep -v 'pkgdir' | grep -v '\-P' | grep -v '\\' | awk '{print $1}' | sed -e 's/packages\///' -e 's/\/[^\/]*.pacscript://')
+    done < <(grep " wget\| curl" packages/*/*pacscript | grep -v 'O "${i}"' | grep -v '\${s}' | grep -v 'url}' | grep -v 'pkgdir' | grep -v '\-P' | grep -v '\\' | awk '{print $1}' | sed -e 's/packages\///' -e 's/\/[^\/]*.pacscript://')
 
     for pkg in "${packageArray[@]}"; do
         unset destArray
