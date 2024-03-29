@@ -248,7 +248,7 @@ with open("packagelist", 'r') as plist:
         subst(ppath, r'SRCDIR', r'srcdir')
         subst(ppath, r'pkgname', r'gives')
         subst(ppath, r'^name="(.*)"', r'pkgname="\1"')
-        subst(ppath, r'\\$\{name\}', r'\${pkgname}')
+        subst(ppath, r'\\$\{name(?<!\_)', r'\${pkgname')
         subst(ppath, r'prepare\(\) {', r'prepare() {\n  cd "\${_archive}"')
         subst(ppath, r'build\(\) {', r'build() {\n  cd "\${_archive}"')
         subst(ppath, r'package\(\) {', r'package() {\n  cd "\${_archive}"')
