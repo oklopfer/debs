@@ -407,5 +407,14 @@ files=($(cat packagelist))
 
 for file in "${files[@]}"; do
     update_carch_stuff "packages/$file/$file.pacscript"
+    awk '
+    BEGIN { in_block=0; }
+    /prepare\(\) \{/ { in_block=1; }
+    /build\(\) \{/ { in_block=1; }
+    /package\(\) \{/ { in_block=1; }
+    /^\}/ { if (in_block) in_block=0; }
+    in_block { gsub(/sudo /, ""); }
+    { print; }
+    ' "packages/$file/$file.pacscript" > file.tmp && mv file.tmp "packages/$file/$file.pacscript"
 done && \
 update_wget_stuff
