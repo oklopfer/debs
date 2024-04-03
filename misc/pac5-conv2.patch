@@ -1,6 +1,6 @@
-From 2d35a2accef8c60694c8316dae98560029861edc Mon Sep 17 00:00:00 2001
+From 5e9453d65e415bde3145f58525486d3c46deea4d Mon Sep 17 00:00:00 2001
 From: ook37 <oren+12345@taumoda.com>
-Date: Tue, 2 Apr 2024 20:12:25 -0400
+Date: Wed, 3 Apr 2024 02:44:00 -0400
 Subject: [PATCH] refactor(*)!: clean up remaining conversions
 
 ---
@@ -10,7 +10,7 @@ Subject: [PATCH] refactor(*)!: clean up remaining conversions
  packages/aseprite/aseprite.pacscript          | 20 ++++-----
  packages/bazecor-app/bazecor-app.pacscript    | 12 ++++--
  packages/doas-git/doas-git.pacscript          | 23 ++--------
- packages/endlessh-git/endlessh-git.pacscript  | 20 +++------
+ packages/endlessh-git/endlessh-git.pacscript  | 18 ++------
  packages/ffsend-bin/ffsend-bin.pacscript      | 31 ++++++++------
  .../firefox-developer-edition-bin.pacscript   |  3 +-
  packages/goverlay-bin/goverlay-bin.pacscript  | 12 ++++--
@@ -26,11 +26,13 @@ Subject: [PATCH] refactor(*)!: clean up remaining conversions
  .../sidequest-bin/sidequest-bin.pacscript     | 14 ++++---
  .../spacecadetpinball-git.pacscript           | 25 +++--------
  packages/tutanota-app/tutanota-app.pacscript  | 16 ++-----
+ .../unicorn-mobile-git.pacscript              | 10 +----
  .../wine-staging-git.pacscript                | 22 ++++------
- 23 files changed, 178 insertions(+), 224 deletions(-)
+ .../xdg-desktop-portal-hyprland.pacscript     | 14 ++++---
+ 25 files changed, 187 insertions(+), 237 deletions(-)
 
 diff --git a/packages/amfora-bin/amfora-bin.pacscript b/packages/amfora-bin/amfora-bin.pacscript
-index 5e29eebf..31bce87c 100644
+index 7107113b..ad8da1a3 100644
 --- a/packages/amfora-bin/amfora-bin.pacscript
 +++ b/packages/amfora-bin/amfora-bin.pacscript
 @@ -5,8 +5,8 @@ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
@@ -231,7 +233,7 @@ index 5d90585d..abecb72d 100644
    cd "${_archive}"
    make -j"${NCPU}"
 diff --git a/packages/endlessh-git/endlessh-git.pacscript b/packages/endlessh-git/endlessh-git.pacscript
-index 0f8bbfc4..1ec13b27 100644
+index 0f8bbfc4..a8cf33d9 100644
 --- a/packages/endlessh-git/endlessh-git.pacscript
 +++ b/packages/endlessh-git/endlessh-git.pacscript
 @@ -5,19 +5,14 @@ source=(
@@ -258,18 +260,15 @@ index 0f8bbfc4..1ec13b27 100644
  build() {
    cd "${_archive}"
    make -j"${NCPU}"
-@@ -35,9 +30,4 @@ post_remove() {
-   sudo rm -rf "/usr/share/licenses/${gives}"
+@@ -36,8 +31,3 @@ post_remove() {
    sudo rm -rf "/usr/share/doc/${gives}"
  }
--# vim:set ft=sh ts=2 sw=2 et:
+ # vim:set ft=sh ts=2 sw=2 et:
 -
 -sha256sums=(
 -  "SKIP"
 -  "SKIP"
 -)
-+# vim:set ft=sh ts=2 sw=2 et:
-\ No newline at end of file
 diff --git a/packages/ffsend-bin/ffsend-bin.pacscript b/packages/ffsend-bin/ffsend-bin.pacscript
 index b1e6379b..7993a974 100644
 --- a/packages/ffsend-bin/ffsend-bin.pacscript
@@ -825,6 +824,32 @@ index 33570911..4bafeb49 100644
  
      # Install .desktop file
      install -Dm644 "${srcdir}/${gives}.png" "${pkgdir}/usr/share/pixmaps/${gives}.png"
+diff --git a/packages/unicorn-mobile-git/unicorn-mobile-git.pacscript b/packages/unicorn-mobile-git/unicorn-mobile-git.pacscript
+index ce898dca..1016e4ed 100644
+--- a/packages/unicorn-mobile-git/unicorn-mobile-git.pacscript
++++ b/packages/unicorn-mobile-git/unicorn-mobile-git.pacscript
+@@ -1,5 +1,5 @@
+ pkgname="unicorn-mobile-git"
+-source=("https://github.com/rhino-linux/unicorn.git")
++source=("https://github.com/rhino-linux/unicorn.git#branch=mobile")
+ pkgver="0.0.1"
+ pkgrel="2"
+ depends=("xfwm4" "xfdashboard" "xfdashboard-plugins" "plank" "dconf-cli" "yaru-theme-icon"
+@@ -16,14 +16,6 @@ pkgdesc="Unicorn Desktop Mobile variant by the Rhino Linux Team"
+ maintainer=("Oren Klopfer <oren@taumoda.com>")
+ incompatible=("debian:*")
+ 
+-prepare() {
+-  cd "${_archive}"
+-  git remote add upstream "${source[0]}"
+-  git fetch upstream
+-  git checkout upstream/mobile
+-  git config --global --add safe.directory "${PWD}"
+-}
+-
+ build() {
+   cd "${_archive}"
+   mkdir -p "${pkgdir}/usr/share/backgrounds"
 diff --git a/packages/wine-staging-git/wine-staging-git.pacscript b/packages/wine-staging-git/wine-staging-git.pacscript
 index 52c46397..5ba6c734 100644
 --- a/packages/wine-staging-git/wine-staging-git.pacscript
@@ -879,6 +904,39 @@ index 52c46397..5ba6c734 100644
 -  "SKIP"
 -  "SKIP"
 -)
+diff --git a/packages/xdg-desktop-portal-hyprland/xdg-desktop-portal-hyprland.pacscript b/packages/xdg-desktop-portal-hyprland/xdg-desktop-portal-hyprland.pacscript
+index 924bcf34..7cef9e9d 100644
+--- a/packages/xdg-desktop-portal-hyprland/xdg-desktop-portal-hyprland.pacscript
++++ b/packages/xdg-desktop-portal-hyprland/xdg-desktop-portal-hyprland.pacscript
+@@ -2,10 +2,15 @@ pkgname="xdg-desktop-portal-hyprland"
+ repology=("project: ${pkgname}")
+ pkgver="1.2.5"
+ pkgrel="1"
+-source=("https://github.com/hyprwm/${pkgname}/archive/v${pkgver}/v${pkgver}.tar.gz")
+ protocols_ver="0.2"
+-protocols_url="https://github.com/hyprwm/hyprland-protocols.git"
+-sha256sums=("c8ba3d173a580d8b4ec9a5ee15e7780d266e536a78a12aa28d8234e0854ae86d")
++source=(
++  "https://github.com/hyprwm/${pkgname}/archive/v${pkgver}/v${pkgver}.tar.gz"
++  "https://github.com/hyprwm/hyprland-protocols.git#branch=v${protocols_ver}"
++)
++sha256sums=(
++  "c8ba3d173a580d8b4ec9a5ee15e7780d266e536a78a12aa28d8234e0854ae86d"
++  "SKIP"
++)
+ compatible=('ubuntu:devel' 'debian:sid' 'ubuntu:mantic' 'ubuntu:noble')
+ homepage='https://hyprland.org/'
+ pkgdesc="xdg-desktop-portal backend for hyprland"
+@@ -29,8 +34,7 @@ build() {
+   cd "${_archive}"
+   echo '[preferred]
+ default=hyprland;gtk' | tee hyprland-portals.conf > /dev/null
+-  mkdir -p subprojects && cd subprojects
+-  git clone --quiet --depth=1 --jobs=10 "${protocols_url}" -b v"${protocols_ver}" && cd "${srcdir}"
++  mkdir -p subprojects && cp -r "${srcdir}/hyprland-protocols" subprojects
+   meson setup build
+   ninja -C build
+   make -j"${NCPU}" -C hyprland-share-picker all
 -- 
 2.39.0
 
