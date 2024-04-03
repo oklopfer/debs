@@ -36,7 +36,7 @@ index 5e29eebf..31bce87c 100644
 @@ -5,8 +5,8 @@ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
  pkgdesc="Amfora aims to be the best looking Gemini client with the most features"
  sha256sums=(
-   "a468f97f0e3fa1d69868980fd0e5893388ccd9c849874d26e4d0b426fd6bff3e"
+   "b2e9e50954345b38c4481e200944950675d30cdd4e1d7eef50d5b3a528cc1a0a"
 -  "SKIP"
 -  "SKIP"
 +  "3d029d05cff8c42e82685ce7a61fcaa2118e4cbb6a547816a7d5150868a11092"
