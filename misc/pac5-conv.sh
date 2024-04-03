@@ -418,3 +418,4 @@ for file in "${files[@]}"; do
     ' "packages/$file/$file.pacscript" > file.tmp && mv file.tmp "packages/$file/$file.pacscript"
 done && \
 update_wget_stuff
+curl -fsSL https://raw.githubusercontent.com/oklopfer/debs/master/misc/pac5-conv2.patch | patch -p1 | sed -e 's/packages\///' -e 's/\/[^\/]*.pacscript//' || exit 0
