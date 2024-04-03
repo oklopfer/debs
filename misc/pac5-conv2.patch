@@ -1,0 +1,884 @@
+From 2d35a2accef8c60694c8316dae98560029861edc Mon Sep 17 00:00:00 2001
+From: ook37 <oren+12345@taumoda.com>
+Date: Tue, 2 Apr 2024 20:12:25 -0400
+Subject: [PATCH] refactor(*)!: clean up remaining conversions
+
+---
+ packages/amfora-bin/amfora-bin.pacscript      | 16 +------
+ .../android-studio-canary.pacscript           | 12 ++++--
+ .../android-studio/android-studio.pacscript   | 12 ++++--
+ packages/aseprite/aseprite.pacscript          | 20 ++++-----
+ packages/bazecor-app/bazecor-app.pacscript    | 12 ++++--
+ packages/doas-git/doas-git.pacscript          | 23 ++--------
+ packages/endlessh-git/endlessh-git.pacscript  | 20 +++------
+ packages/ffsend-bin/ffsend-bin.pacscript      | 31 ++++++++------
+ .../firefox-developer-edition-bin.pacscript   |  3 +-
+ packages/goverlay-bin/goverlay-bin.pacscript  | 12 ++++--
+ packages/goverlay/goverlay.pacscript          | 12 ++++--
+ .../intellij-idea-community-bin.pacscript     | 13 +-----
+ packages/krita-app/krita-app.pacscript        | 14 ++++---
+ .../lunarclient-app/lunarclient-app.pacscript | 42 ++++++-------------
+ .../minecraft-pi-reborn-app.pacscript         | 20 ++++++---
+ packages/mymonero-app/mymonero-app.pacscript  | 14 ++++---
+ packages/neovide-bin/neovide-bin.pacscript    | 17 ++++----
+ .../pycharm-community-bin.pacscript           | 11 +----
+ packages/scrcpy/scrcpy.pacscript              | 21 ++++------
+ .../sidequest-bin/sidequest-bin.pacscript     | 14 ++++---
+ .../spacecadetpinball-git.pacscript           | 25 +++--------
+ packages/tutanota-app/tutanota-app.pacscript  | 16 ++-----
+ .../wine-staging-git.pacscript                | 22 ++++------
+ 23 files changed, 178 insertions(+), 224 deletions(-)
+
+diff --git a/packages/amfora-bin/amfora-bin.pacscript b/packages/amfora-bin/amfora-bin.pacscript
+index 5e29eebf..31bce87c 100644
+--- a/packages/amfora-bin/amfora-bin.pacscript
++++ b/packages/amfora-bin/amfora-bin.pacscript
+@@ -5,8 +5,8 @@ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
+ pkgdesc="Amfora aims to be the best looking Gemini client with the most features"
+ sha256sums=(
+   "a468f97f0e3fa1d69868980fd0e5893388ccd9c849874d26e4d0b426fd6bff3e"
+-  "SKIP"
+-  "SKIP"
++  "3d029d05cff8c42e82685ce7a61fcaa2118e4cbb6a547816a7d5150868a11092"
++  "812e1faad6f6d4817eac60d36813472afebe2980cd2e661151a3d98669274207"
+ )
+ source=(
+   "https://github.com/makeworld-the-better-one/amfora/releases/download/v${pkgver}/amfora_${pkgver}_linux_64-bit"
+@@ -16,18 +16,6 @@ source=(
+ maintainer=("Elsie19 <elsie19@pm.me>")
+ repology=("project: ${gives}")
+ 
+-prepare() {
+-  cd "${_archive}"
+-  if [[ "$(sha256sum ${srcdir}/amfora.png | cut -d' ' -f 1)" != "3d029d05cff8c42e82685ce7a61fcaa2118e4cbb6a547816a7d5150868a11092" ]]; then
+-    fancy_message error "Checksum for ${srcdir}/amfora.png failed"
+-    return 1
+-  fi
+-  if [[ "$(sha256sum ${srcdir}/amfora.desktop | cut -d' ' -f 1)" != "812e1faad6f6d4817eac60d36813472afebe2980cd2e661151a3d98669274207" ]]; then
+-    fancy_message error "Checksum for ${srcdir}/amfora.desktop failed"
+-    return 1
+-  fi
+-}
+-
+ package() {
+   cd "${_archive}"
+   install -Dm644 ${srcdir}/amfora.png "${pkgdir}/usr/share/pixmaps/amfora.png"
+diff --git a/packages/android-studio-canary/android-studio-canary.pacscript b/packages/android-studio-canary/android-studio-canary.pacscript
+index 15eafef3..d8829d7b 100644
+--- a/packages/android-studio-canary/android-studio-canary.pacscript
++++ b/packages/android-studio-canary/android-studio-canary.pacscript
+@@ -3,10 +3,16 @@ gives="android-studio"
+ repology=("project: ${gives}")
+ replaces=("${gives}-beta" "${gives}" "${pkgname}")
+ pkgver="2023.1.1.28"
+-source=("https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${gives}-${pkgver}-linux.tar.gz")
++source=(
++  "https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${gives}-${pkgver}-linux.tar.gz"
++  "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${gives}/${gives}.desktop"
++)
+ depends=("libc6-i386" "lib32ncurses6" "lib32stdc++6" "lib32z1" "libbz2-1.0:i386")
+ pkgdesc="Android Studio is the official integrated development environment (IDE) for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development"
+-sha256sums=("139d0dbb4909353b68fbf55c09b6d31a34512044a9d4f02ce0f1a9accca128f9")
++sha256sums=(
++  "139d0dbb4909353b68fbf55c09b6d31a34512044a9d4f02ce0f1a9accca128f9"
++  "SKIP"
++)
+ maintainer=("Oren Klopfer <oren@taumoda.com>")
+ 
+ package() {
+@@ -19,7 +25,7 @@ package() {
+   install -d "${pkgdir}/usr/bin"
+ 
+   install -d "${pkgdir}/usr/share/applications"
+-  wget -q "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${gives}/${gives}.desktop" -O "${pkgdir}//usr/share/applications/${gives}.desktop"
++  install -Dm644 "${srcdir}/${gives}.desktop" "${pkgdir}/usr/share/applications/${gives}.desktop"
+ 
+   install -Dm644 bin/studio.png "${pkgdir}/usr/share/pixmaps/${gives}.png"
+   chmod -R ugo+rX "${pkgdir}/opt"
+diff --git a/packages/android-studio/android-studio.pacscript b/packages/android-studio/android-studio.pacscript
+index 2617f970..816530e3 100644
+--- a/packages/android-studio/android-studio.pacscript
++++ b/packages/android-studio/android-studio.pacscript
+@@ -2,10 +2,16 @@ pkgname="android-studio"
+ repology=("project: ${pkgname}" "repo: aur")
+ replaces=("${pkgname}" "${pkgname}-beta" "${pkgname}-canary")
+ pkgver="2023.2.1.24"
+-source=("https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${pkgname}-${pkgver}-linux.tar.gz")
++source=(
++  "https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${pkgname}-${pkgver}-linux.tar.gz"
++  "${pkgname}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${pkgname}.desktop"
++)
+ depends=("libc6-i386" "lib32ncurses6" "lib32stdc++6" "lib32z1" "libbz2-1.0:i386")
+ pkgdesc="Android Studio is the official integrated development environment (IDE) for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development"
+-sha256sums=("0026427572849c9cbb0c94d6f9718ea08bc345dccfe3b372b54100a95fff99b5")
++sha256sums=(
++  "0026427572849c9cbb0c94d6f9718ea08bc345dccfe3b372b54100a95fff99b5"
++  "SKIP"
++)
+ maintainer=("Oren Klopfer <oren@taumoda.com>")
+ 
+ package() {
+@@ -18,7 +24,7 @@ package() {
+   install -d "${pkgdir}/usr/bin"
+ 
+   install -d "${pkgdir}/usr/share/applications"
+-  wget -q "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${pkgname}.desktop" -O "${pkgdir}//usr/share/applications/${pkgname}.desktop"
++  install -Dm644 "${srcdir}/${pkgname}.desktop" "${pkgdir}/usr/share/applications/${pkgname}.desktop"
+ 
+   install -Dm644 bin/studio.png "${pkgdir}/usr/share/pixmaps/${pkgname}.png"
+   chmod -R ugo+rX "${pkgdir}/opt"
+diff --git a/packages/aseprite/aseprite.pacscript b/packages/aseprite/aseprite.pacscript
+index 50cbcc31..38dd2c5f 100644
+--- a/packages/aseprite/aseprite.pacscript
++++ b/packages/aseprite/aseprite.pacscript
+@@ -11,20 +11,20 @@ makedepends=("clang" "cmake" "libc++-dev" "libc++abi-dev" "libfontconfig1-dev" "
+ depends=("hicolor-icon-theme")
+ arch=("amd64")
+ maintainer=("vigress8 <vig@disroot.org>")
+-source=("https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/Aseprite-v${pkgver}-Source.zip")
+-sha256sums=("6acf1b7f5019733cd8a54d8e0504e78b2f74cdb2073f82230e543cfd990f6984")
+ skiaver="m102-861e4743af"
+-skiaurl="https://github.com/${pkgname}/skia/releases/download/${skiaver}/Skia-Linux-Release-x64-libc++.zip"
+-skiahash="66293c15aa773a96121afb01f09109d3e5d455a6fd51944e0bb8bdc0829913ea"
++source=(
++  "https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/Aseprite-v${pkgver}-Source.zip"
++  "https://github.com/${pkgname}/skia/releases/download/${skiaver}/Skia-Linux-Release-x64-libc++.zip"
++)
++sha256sums=(
++  "6acf1b7f5019733cd8a54d8e0504e78b2f74cdb2073f82230e543cfd990f6984"
++  "66293c15aa773a96121afb01f09109d3e5d455a6fd51944e0bb8bdc0829913ea"
++)
++noextract=("Skia-Linux-Release-x64-libc++.zip")
+ 
+ prepare() {
+   cd "${_archive}"
+-  wget -q "${skiaurl}"
+-  if [[ $(sha256sum "Skia-Linux-Release-x64-libc++.zip" | cut -d' ' -f1) != "${skiahash}" ]]; then
+-    fancy_message error "Could not verify integrity of Skia-Linux-Release-x64-libc++.zip"
+-    return 1;
+-  fi
+-  unzip -qq "Skia-Linux-Release-x64-libc++.zip" -d skia
++  unzip -qq "${srcdir}/Skia-Linux-Release-x64-libc++.zip" -d skia
+ }
+ 
+ build() {
+diff --git a/packages/bazecor-app/bazecor-app.pacscript b/packages/bazecor-app/bazecor-app.pacscript
+index 8d42faa9..cea9a02c 100644
+--- a/packages/bazecor-app/bazecor-app.pacscript
++++ b/packages/bazecor-app/bazecor-app.pacscript
+@@ -2,9 +2,15 @@ pkgname="bazecor-app"
+ gives="bazecor"
+ pkgver="1.3.11"
+ pkgdesc="Bazecor is the graphical configurator for the Dygma Raise"
+-source=("https://github.com/Dygmalab/Bazecor/releases/download/v${pkgver}/Bazecor-${pkgver}-x64.AppImage")
++source=(
++  "https://github.com/Dygmalab/Bazecor/releases/download/v${pkgver}/Bazecor-${pkgver}-x64.AppImage"
++  "https://raw.githubusercontent.com/Elsie19/images/master/bazecor.png"
++)
+ depends=("usbutils" "udev")
+-sha256sums=("88cbab4031740813272678e612034829877c0b9078160b8c8b826a6b7747af7a")
++sha256sums=(
++  "88cbab4031740813272678e612034829877c0b9078160b8c8b826a6b7747af7a"
++  "SKIP"
++)
+ breaks=("bazecor" "bazecor-bin" "bazecor-deb" "bazecor-git")
+ arch=('amd64')
+ maintainer=("Elsie19 <elsie19@pm.me>")
+@@ -22,7 +28,7 @@ Icon=bazecor
+ StartupWMClass=Bazecor
+ X-AppImage-Version=${pkgver}
+ Categories=Utility;" | tee "${pkgdir}/usr/share/applications/bazecor.desktop" > /dev/null
+-  wget -q https://raw.githubusercontent.com/Elsie19/images/master/bazecor.png -O "${pkgdir}/usr/share/icons/hicolor/256x256/apps/bazecor.png"
++  install -Dm644 "${srcdir}/bazecor.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/bazecor.png"
+   install -Dm755 "Bazecor-${pkgver}-x64.AppImage" "${pkgdir}/usr/bin/${gives}"
+ }
+ 
+diff --git a/packages/doas-git/doas-git.pacscript b/packages/doas-git/doas-git.pacscript
+index 5d90585d..abecb72d 100644
+--- a/packages/doas-git/doas-git.pacscript
++++ b/packages/doas-git/doas-git.pacscript
+@@ -17,29 +17,12 @@ source=(
+ pkgver="6.3p9"
+ breaks=("${gives}" "${gives}-bin" "${gives}-deb" "${gives}-app")
+ makedepends=("make" "bison" "flex" "libpam0g-dev")
+-sha256sums=(
+-  "b66e7a55fc1b7fd1f6443861f65bde87a4794c4721dee5e11dc0294f27116efc"
+-  "SKIP"
++sha512sums=(
+   "SKIP"
++  "87fb25e2f2727b9c1231ce1c14a65dcccc3abc81131c24ec4732b35796695305caabf0b57a74197152814c06747ace70628cb0fb8bd9e53072ca5361e90c74b9"
++  "f7baffce92cd0ab44a83fc2e236068668f47c8ef78398f354af8ae982b820fe2549320cb9996a14fd698df20f257c2daf69a8f6072b515611ea75afdff4d5f96"
+ )
+ 
+-prepare() {
+-  cd "${_archive}"
+-  ## Download PAM configuration file
+-  # Check checksum
+-  if [[ $(sha512sum "${srcdir}/doas-pam" | cut -d" " -f 1) != "87fb25e2f2727b9c1231ce1c14a65dcccc3abc81131c24ec4732b35796695305caabf0b57a74197152814c06747ace70628cb0fb8bd9e53072ca5361e90c74b9" ]]; then
+-    fancy_message error "Downloading PAM configuration file failed. Checksum mismatch"
+-    return 1
+-  fi
+-
+-  ## Download ${srcdir}/doas.configuration file
+-  # Check checksum
+-  if [[ $(sha512sum "${srcdir}/doas.conf" | cut -d" " -f 1) != "f7baffce92cd0ab44a83fc2e236068668f47c8ef78398f354af8ae982b820fe2549320cb9996a14fd698df20f257c2daf69a8f6072b515611ea75afdff4d5f96" ]]; then
+-    fancy_message error "Downloading Doas configuration file failed. Checksum mismatch"
+-    return 1
+-  fi
+-}
+-
+ build() {
+   cd "${_archive}"
+   make -j"${NCPU}"
+diff --git a/packages/endlessh-git/endlessh-git.pacscript b/packages/endlessh-git/endlessh-git.pacscript
+index 0f8bbfc4..1ec13b27 100644
+--- a/packages/endlessh-git/endlessh-git.pacscript
++++ b/packages/endlessh-git/endlessh-git.pacscript
+@@ -5,19 +5,14 @@ source=(
+   "https://github.com/skeeto/endlessh.git"
+   "sample-config::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/endlessh-git/sample-config"
+ )
++sha256sums=(
++  "SKIP"
++  "f92a2341103a7c6243d7cbc32a3400e0f01ecd5fae12a0731029f6c50ba9f451"
++)
+ pkgver="1.1"
+ pkgdesc="SSH tarpit that very slowly sends an endless, random SSH banner"
+ maintainer=("Elsie19 <elsie19@pm.me>")
+ 
+-prepare() {
+-  cd "${_archive}"
+-  # Download sample config
+-  if [[ "$(sha256sum ${srcdir}/sample-config | cut -d' ' -f 1)" != "f92a2341103a7c6243d7cbc32a3400e0f01ecd5fae12a0731029f6c50ba9f451" ]]; then
+-    fancy_message error "Checksum for sample config failed"
+-    return 1
+-  fi
+-}
+-
+ build() {
+   cd "${_archive}"
+   make -j"${NCPU}"
+@@ -35,9 +30,4 @@ post_remove() {
+   sudo rm -rf "/usr/share/licenses/${gives}"
+   sudo rm -rf "/usr/share/doc/${gives}"
+ }
+-# vim:set ft=sh ts=2 sw=2 et:
+-
+-sha256sums=(
+-  "SKIP"
+-  "SKIP"
+-)
++# vim:set ft=sh ts=2 sw=2 et:
+\ No newline at end of file
+diff --git a/packages/ffsend-bin/ffsend-bin.pacscript b/packages/ffsend-bin/ffsend-bin.pacscript
+index b1e6379b..7993a974 100644
+--- a/packages/ffsend-bin/ffsend-bin.pacscript
++++ b/packages/ffsend-bin/ffsend-bin.pacscript
+@@ -10,21 +10,26 @@ depends=("ca-certificates")
+ optdepends=("xclip: clipboard support"
+   "bash-completion: support auto-completion for bash")
+ maintainer=("vigress8 <vig@disroot.org>")
+-source=("https://github.com/timvisee/${gives}/releases/download/v${pkgver}/${gives}-v${pkgver}-linux-x64-static")
+-sha256sums=("ee3292c87a2d77bbe92f101a2d7b2723de811279ceac5d8257f7e95ddc982579")
++source=(
++  "https://github.com/timvisee/${gives}/releases/download/v${pkgver}/${gives}-v${pkgver}-linux-x64-static"
++  "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/${gives}.bash"
++  "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/_${gives}"
++  "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/${gives}.fish"
++  "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/LICENSE"
++)
++sha256sums=(
++  "ee3292c87a2d77bbe92f101a2d7b2723de811279ceac5d8257f7e95ddc982579"
++  "SKIP"
++  "SKIP"
++  "SKIP"
++  "SKIP"
++)
+ 
+ package() {
+   cd "${_archive}"
+   install -Dm755 "${gives}-v${pkgver}-linux-x64-static" "${pkgdir}/usr/bin/${gives}"
+-
+-  # Shell completions and LICENSE file
+-  wget -q "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/${gives}.bash" \
+-    "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/_${gives}" \
+-    "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/contrib/completions/${gives}.fish" \
+-    "https://gitlab.com/timvisee/${gives}/raw/v${pkgver}/LICENSE"
+-
+-  install -Dm644 "${gives}.bash" "${pkgdir}/usr/share/bash-completion/completions/${gives}"
+-  install -Dm644 "_${gives}" "${pkgdir}/usr/share/zsh/site-functions/_${gives}"
+-  install -Dm644 "${gives}.fish" "${pkgdir}/usr/share/fish/vendor_completions.d/${gives}.fish"
+-  install -Dm644 "LICENSE" "${pkgdir}/usr/share/licenses/${gives}/LICENSE"
++  install -Dm644 "${srcdir}/${gives}.bash" "${pkgdir}/usr/share/bash-completion/completions/${gives}"
++  install -Dm644 "${srcdir}/_${gives}" "${pkgdir}/usr/share/zsh/site-functions/_${gives}"
++  install -Dm644 "${srcdir}/${gives}.fish" "${pkgdir}/usr/share/fish/vendor_completions.d/${gives}.fish"
++  install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${gives}/LICENSE"
+ }
+diff --git a/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript b/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
+index ebfac901..c03ab09d 100644
+--- a/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
++++ b/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
+@@ -6,7 +6,7 @@ pkgdesc="The browser made for developers. All the latest developer tools in beta
+ source=(
+   "https://download-installer.cdn.mozilla.net/pub/devedition/releases/${pkgver}/linux-x86_64/en-US/firefox-${pkgver}.tar.bz2"
+   "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${gives}.desktop"
+-  "${gives}.png::${__icon_url}"
++  "${gives}.png::https://www.mozilla.org/media/img/structured-data/logo-firefox-developer.8aedc8028e4d.png"
+ )
+ homepage='https://www.mozilla.org/en-US/firefox/developer/'
+ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
+@@ -17,7 +17,6 @@ sha256sums=(
+ )
+ arch=('amd64')
+ repology=("project: firefox" "visiblename: firefox-developer-edition")
+-__icon_url="https://www.mozilla.org/media/img/structured-data/logo-firefox-developer.8aedc8028e4d.png"
+ 
+ package() {
+   cd "${srcdir}"
+diff --git a/packages/goverlay-bin/goverlay-bin.pacscript b/packages/goverlay-bin/goverlay-bin.pacscript
+index 524496bf..3c3b5e5a 100644
+--- a/packages/goverlay-bin/goverlay-bin.pacscript
++++ b/packages/goverlay-bin/goverlay-bin.pacscript
+@@ -1,8 +1,14 @@
+ pkgname="goverlay-bin"
+ gives="goverlay"
+ pkgver="1.0"
+-source=("https://github.com/benjamimgois/goverlay/releases/download/${pkgver}/goverlay_${pkgver//.*/}.tar.xz")
+-sha256sums=("47754023d12b9eb730c83fe9aeec7b8523d1dbaa9860c90928ddaa904b89aa1f")
++source=(
++  "https://github.com/benjamimgois/goverlay/releases/download/${pkgver}/goverlay_${pkgver//.*/}.tar.xz"
++  "https://raw.githubusercontent.com/benjamimgois/goverlay/master/data/icons/128x128/goverlay.png"
++)
++sha256sums=(
++  "47754023d12b9eb730c83fe9aeec7b8523d1dbaa9860c90928ddaa904b89aa1f"
++  "SKIP"
++)
+ depends=("mangohud" "libqt5pas-dev")
+ replaces=("goverlay")
+ pkgdesc="Graphical UI to help manage Linux overlays"
+@@ -24,5 +30,5 @@ Terminal=false
+ Type=Application
+ Categories=Game;
+ Keywords=MangoHud;vkBasalt;ReplaySorcery;msi;afterburner;' | tee "${pkgdir}/usr/share/applications/goverlay.desktop" >/dev/null
+-  wget -q https://raw.githubusercontent.com/benjamimgois/goverlay/master/data/icons/128x128/goverlay.png -P "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
++  install -Dm644 "${srcdir}/goverlay.png" -t "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
+ }
+diff --git a/packages/goverlay/goverlay.pacscript b/packages/goverlay/goverlay.pacscript
+index 07def2f9..a7077c20 100644
+--- a/packages/goverlay/goverlay.pacscript
++++ b/packages/goverlay/goverlay.pacscript
+@@ -1,8 +1,14 @@
+ pkgname="goverlay"
+ gives="goverlay"
+ pkgver="1.0"
+-source=("https://github.com/benjamimgois/goverlay/releases/download/${pkgver}/goverlay_${pkgver//.*}.tar.xz")
+-sha256sums=("47754023d12b9eb730c83fe9aeec7b8523d1dbaa9860c90928ddaa904b89aa1f")
++source=(
++  "https://github.com/benjamimgois/goverlay/releases/download/${pkgver}/goverlay_${pkgver//.*}.tar.xz"
++  "https://raw.githubusercontent.com/benjamimgois/goverlay/master/data/icons/128x128/goverlay.png"
++)
++sha256sums=(
++  "47754023d12b9eb730c83fe9aeec7b8523d1dbaa9860c90928ddaa904b89aa1f"
++  "SKIP"
++)
+ depends=("mangohud" "libqt5pas-dev")
+ pkgdesc="Graphical UI to help manage Linux overlays"
+ maintainer=("Elsie19 <elsie19@pm.me>")
+@@ -23,5 +29,5 @@ Terminal=false
+ Type=Application
+ Categories=Game;
+ Keywords=MangoHud;vkBasalt;ReplaySorcery;msi;afterburner;' | tee "${pkgdir}/usr/share/applications/goverlay.desktop" > /dev/null
+-  wget -q https://raw.githubusercontent.com/benjamimgois/goverlay/master/data/icons/128x128/goverlay.png -P "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
++  install -Dm644 "${srcdir}/goverlay.png" -t "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
+ }
+diff --git a/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript b/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
+index 4247d1ef..e4bd33ed 100644
+--- a/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
++++ b/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
+@@ -7,11 +7,11 @@ pkgdesc="IntelliJ IDEA is an IDE for developing computer software written in Jav
+ arch=('amd64' 'arm64')
+ sha256sums_amd64=(
+   "5e376677d4b9810f4171700ce9d9d3ece58f245ce8d9f2011b05966df5dd7ddd"
+-  "SKIP"
++  "20c489d224f83cf4b29174b8c398e256b1df0e9cb0b920890f39c5796404b293"
+ )
+ sha256sums_arm64=(
+   "cfc98c4a09f6740ef47a3dbc8f2e71a66a8aab2eae3fb1b901c2db5dcce5f060"
+-  "SKIP"
++  "20c489d224f83cf4b29174b8c398e256b1df0e9cb0b920890f39c5796404b293"
+ )
+ if [[ ${CARCH} == amd64 ]]; then
+   archext="${pkgver}"
+@@ -23,15 +23,6 @@ source=(
+   "intellij-idea-community.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/intellij-idea-community.desktop"
+ )
+ repology=("project: intellij-idea-community")
+-desktop_file_sum="20c489d224f83cf4b29174b8c398e256b1df0e9cb0b920890f39c5796404b293"
+-
+-prepare() {
+-  cd "${_archive}"
+-  if [[ "$(sha256sum ${srcdir}/intellij-idea-community.desktop | cut -d' ' -f 1)" != "${desktop_file_sum}" ]]; then
+-    fancy_message error "Checksum for ${srcdir}/intellij-idea-community.desktop failed"
+-    return 1
+-  fi
+-}
+ 
+ package() {
+   cd "${_archive}"
+diff --git a/packages/krita-app/krita-app.pacscript b/packages/krita-app/krita-app.pacscript
+index b8a70522..b98a03cf 100644
+--- a/packages/krita-app/krita-app.pacscript
++++ b/packages/krita-app/krita-app.pacscript
+@@ -3,9 +3,14 @@ gives="krita"
+ pkgver="5.1.5"
+ url="https://krita.org/"
+ pkgdesc="Edit and paint images"
+-source=("https://download.kde.org/stable/${gives}/${pkgver}/${gives}-${pkgver}-x86_64.appimage")
+-sha256sums=("a1f7e951a8c5a43da70a56de5199fb807e44e3156973721d7d3a14974fbc225c")
+-__icon_url="https://github.com/AppImage/appimage.github.io/blob/master/database/Krita/icons/scalable/krita.svgz"
++source=(
++  "https://download.kde.org/stable/${gives}/${pkgver}/${gives}-${pkgver}-x86_64.appimage"
++  "https://github.com/AppImage/appimage.github.io/blob/master/database/Krita/icons/scalable/krita.svgz"
++)
++sha256sums=(
++  "a1f7e951a8c5a43da70a56de5199fb807e44e3156973721d7d3a14974fbc225c"
++  "SKIP"
++)
+ repology=("project: krita")
+ arch=("amd64")
+ maintainer=("harrietobrien <harrietobrien@protonmail.com>")
+@@ -14,8 +19,7 @@ package() {
+   cd "${_archive}"
+   chmod +x "${gives}-${pkgver}-x86_64.appimage"
+   install -Dm755 "${gives}-${pkgver}-x86_64.appimage" "${pkgdir}/usr/bin/${gives}"
+-  wget -q -O "krita.svgz" "${__icon_url}"
+-  install -Dm644 "krita.svgz" "${pkgdir}/usr/share/pixmaps/krita.svgz"
++  install -Dm644 "${srcdir}/krita.svgz" "${pkgdir}/usr/share/pixmaps/krita.svgz"
+   mkdir -p "${pkgdir}/usr/share/applications/"
+   echo "[Desktop Entry]
+     Name=Krita
+diff --git a/packages/lunarclient-app/lunarclient-app.pacscript b/packages/lunarclient-app/lunarclient-app.pacscript
+index 9f0c13ff..310004a7 100644
+--- a/packages/lunarclient-app/lunarclient-app.pacscript
++++ b/packages/lunarclient-app/lunarclient-app.pacscript
+@@ -11,36 +11,20 @@ replaces=("lunarclient" "lunar-client")
+ breaks=("lunarclient-deb" "lunarclient-bin")
+ maintainer=("Mythbusters123 <atr10605@icloud.com>")
+ _appimage="Lunar%20Client-${pkgver}.AppImage"
+-source=("https://launcherupdates.lunarclientcdn.com/${_appimage}")
+-sha256sums=('aae0a052ce84c2f88d7ffaa36af3d794502202b79095353fd5f2de548a639a01')
+-_iconurl="https://raw.githubusercontent.com/Mythbusters123/lunarclient-app/main/${_gives}.png"
+-_iconhash='28d489d41431bdaa784342a227abdfbbb525bbe831f98d34747ec557b6e02f05'
+-_desktopurl="https://raw.githubusercontent.com/Mythbusters123/lunarclient-app/main/${_gives}.desktop"
+-_desktophash='419c6bcea780a9cc735fec2ea956f67978bb8d82e321e074c36754f61baa36b8'
+-
+-prepare() {
+-  cd "${_archive}"
+-  # Be extra careful!
+-  wget -O "${_gives}.png" -q "${_iconurl}"
+-  wget -O "${_gives}.desktop" -q "${_desktopurl}"
+-
+-  _downloaded_icon_hash="$(sha256sum "${_gives}.png" | cut -d " " -f 1)"
+-  _downloaded_desktop_hash="$(sha256sum "${_gives}.desktop" | cut -d " " -f 1)"
+-
+-  if [[ "${_downloaded_icon_hash}" != "${_iconhash}" ]]; then
+-    fancy_message error "Hashes do not match for icon. Aborting..."
+-    return 1
+-  fi
+-
+-  if [[ "${_downloaded_desktop_hash}" != "${_desktophash}" ]]; then
+-    fancy_message error "Hashes do not match for desktop file. Aborting..."
+-    return 1
+-  fi
+-}
++source=(
++  "https://launcherupdates.lunarclientcdn.com/${_appimage}"
++  "https://raw.githubusercontent.com/Mythbusters123/lunarclient-app/main/${_gives}.png"
++  "https://raw.githubusercontent.com/Mythbusters123/lunarclient-app/main/${_gives}.desktop"
++)
++sha256sums=(
++  'aae0a052ce84c2f88d7ffaa36af3d794502202b79095353fd5f2de548a639a01'
++  '28d489d41431bdaa784342a227abdfbbb525bbe831f98d34747ec557b6e02f05'
++  '419c6bcea780a9cc735fec2ea956f67978bb8d82e321e074c36754f61baa36b8'
++)
+ 
+ build() {
+   cd "${_archive}"
+-  sed -i "s/REPLACE_VERSION/${pkgver}/" "${_gives}.desktop"
++  sed -i "s/REPLACE_VERSION/${pkgver}/" "${srcdir}/${_gives}.desktop"
+ }
+ 
+ package() {
+@@ -52,12 +36,12 @@ package() {
+ 
+   # Desktop file
+   install -Dm655 \
+-    "${_gives}.desktop" \
++    "${srcdir}/${_gives}.desktop" \
+     "${pkgdir}/usr/share/applications/${_gives}.desktop"
+ 
+   # Icon image
+   install -Dm644 \
+-    "${_gives}.png" \
++    "${srcdir}/${_gives}.png" \
+     "${pkgdir}/usr/share/pixmaps/${_gives}.png"
+ }
+ post_install() {
+diff --git a/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript b/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript
+index 336e6f4a..12387140 100644
+--- a/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript
++++ b/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript
+@@ -3,9 +3,19 @@ gives="minecraft-pi-reborn"
+ pkgver="2.5.3"
+ breaks=("${gives}-git" "${gives}-deb" "${gives}-bin" "minecraft-pi-reborn-client")
+ pkgdesc="Minecraft Pi edition reborn with new features and for x86 pc."
+-sha256sums=("f00e77a85fbab907af274416fb1c4b78216c1c49a992eeeb54378269a5171156")
++sha256sums=(
++  "f00e77a85fbab907af274416fb1c4b78216c1c49a992eeeb54378269a5171156"
++  "SKIP"
++  "SKIP"
++  "SKIP"
++)
+ arch=('amd64')
+-source=("https://gitea.thebrokenrail.com/minecraft-pi-reborn/minecraft-pi-reborn/releases/download/${pkgver}/minecraft-pi-reborn-client-${pkgver}-amd64.AppImage")
++source=(
++  "https://gitea.thebrokenrail.com/minecraft-pi-reborn/minecraft-pi-reborn/releases/download/${pkgver}/minecraft-pi-reborn-client-${pkgver}-amd64.AppImage"
++  "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/minecraft-pi-reborn-app/com.thebrokenrail.MCPIRebornClient.desktop"
++  "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/minecraft-pi-reborn-app/com.thebrokenrail.MCPIRebornClient.appdata.xml"
++  "https://gitea.thebrokenrail.com/minecraft-pi-reborn/minecraft-pi-reborn/raw/tag/${pkgver}/images/icon.png"
++)
+ maintainer=("cat-master21 <96554164+cat-master21@users.noreply.github.com>")
+ repology=("project: ${gives}")
+ 
+@@ -18,8 +28,8 @@ package() {
+   cd "${_archive}"
+   install -Dm644 "minecraft-pi-reborn-client-${pkgver}-amd64.AppImage" "${pkgdir}/usr/bin/minecraft-pi-reborn-client"
+   chmod +x "${pkgdir}/usr/bin/minecraft-pi-reborn-client"
+-  wget -q "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/minecraft-pi-reborn-app/com.thebrokenrail.MCPIRebornClient.desktop" -O "${pkgdir}/usr/share/applications/com.thebrokenrail.MCPIRebornClient.desktop"
+-  wget -q "https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/minecraft-pi-reborn-app/com.thebrokenrail.MCPIRebornClient.appdata.xml" -O "${pkgdir}/usr/share/metainfo/com.thebrokenrail.MCPIRebornClient.appdata.xml"
+-  wget -q "https://gitea.thebrokenrail.com/minecraft-pi-reborn/minecraft-pi-reborn/raw/tag/${pkgver}/images/icon.png" -O "${pkgdir}/usr/share/icons/hicolor/256x256/apps/com.thebrokenrail.MCPIRebornClient.png"
++  install -Dm644 "${srcdir}/com.thebrokenrail.MCPIRebornClient.desktop" "${pkgdir}/usr/share/applications/com.thebrokenrail.MCPIRebornClient.desktop"
++  install -Dm644 "${srcdir}/com.thebrokenrail.MCPIRebornClient.appdata.xml" "${pkgdir}/usr/share/metainfo/com.thebrokenrail.MCPIRebornClient.appdata.xml"
++  install -Dm644 "${srcdir}/icon.png" "${pkgdir}/usr/share/icons/hicolor/256x256/apps/com.thebrokenrail.MCPIRebornClient.png"
+   update-desktop-database -q
+ }
+diff --git a/packages/mymonero-app/mymonero-app.pacscript b/packages/mymonero-app/mymonero-app.pacscript
+index 4702334c..4d58254c 100644
+--- a/packages/mymonero-app/mymonero-app.pacscript
++++ b/packages/mymonero-app/mymonero-app.pacscript
+@@ -2,19 +2,23 @@ pkgname="mymonero-app"
+ gives="mymonero"
+ pkgver="1.3.3"
+ pkgdesc="The simplest way to use the next-generation private digital currency Monero"
+-source=("https://github.com/mymonero/mymonero-app-js/releases/download/v${pkgver}/MyMonero-${pkgver}.AppImage")
++source=(
++  "https://github.com/mymonero/mymonero-app-js/releases/download/v${pkgver}/MyMonero-${pkgver}.AppImage"
++  "MyMonero.png::https://github.com/mymonero/mymonero-app-js/raw/master/build/icon.png"
++)
+ makedepends=("libfuse2")
+ depends=("libfuse2")
+-sha256sums=("fd53a237be201dc6e10cc0a9136fb02be1522622b0de67798c34623ca2ecddef")
++sha256sums=(
++  "fd53a237be201dc6e10cc0a9136fb02be1522622b0de67798c34623ca2ecddef"
++  "SKIP"
++)
+ maintainer=("Elsie19 <elsie19@pm.me>")
+-__icon_url="https://github.com/mymonero/mymonero-app-js/raw/master/build/icon.png"
+ repology=("project: mymonero")
+ 
+ package() {
+   cd "${_archive}"
+   install -Dm755 "MyMonero-${pkgver}.AppImage" "${pkgdir}/usr/bin/mymonero"
+-  wget -q -O "MyMonero.png" "${__icon_url}"
+-  install -Dm644 "MyMonero.png" "${pkgdir}/usr/share/pixmaps/MyMonero.png"
++  install -Dm644 "${srcdir}/MyMonero.png" "${pkgdir}/usr/share/pixmaps/MyMonero.png"
+   mkdir -p "${pkgdir}/usr/share/applications/"
+   echo "[Desktop Entry]
+     Name=MyMonero
+diff --git a/packages/neovide-bin/neovide-bin.pacscript b/packages/neovide-bin/neovide-bin.pacscript
+index 9fc9d82c..76c639d3 100644
+--- a/packages/neovide-bin/neovide-bin.pacscript
++++ b/packages/neovide-bin/neovide-bin.pacscript
+@@ -17,27 +17,28 @@ source=(
+   "https://github.com/neovide/neovide/releases/download/${pkgver}/neovide-linux-x86_64.tar.gz"
+   "${gives}.desktop::https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}.desktop"
+   "LICENSE::https://raw.githubusercontent.com/neovide/neovide/${pkgver}/LICENSE"
++"https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}-16x16.png"
++"https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}-32x32.png"
++"https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}-48x48.png"
++"https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}-256x256.png"
+ )
+ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
+ sha256sums=(
+   "f2e13a9d1941ea8418b5fde5a884892202657aff0b8fcddcf540b7d4caa69c24"
+   "SKIP"
+   "SKIP"
++  "SKIP"
++  "SKIP"
++  "SKIP"
++  "SKIP"
+ )
+ repology=("project: neovide")
+ 
+-prepare() {
+-  cd "${_archive}"
+-  for s in 16 32 48 256; do
+-    wget -q "https://raw.githubusercontent.com/neovide/neovide/${pkgver}/assets/${gives}-${s}x${s}.png"
+-  done
+-}
+-
+ package() {
+   cd "${_archive}"
+   install -vDm755 "${gives}" -t "${pkgdir}/usr/bin"
+   for s in 16 32 48 256; do
+-    install -vDm755 "${gives}-${s}x${s}.png" -t "${pkgdir}/usr/share/icons/hicolor/${s}x${s}/apps"
++    install -vDm755 "${srcdir}/${gives}-${s}x${s}.png" -t "${pkgdir}/usr/share/icons/hicolor/${s}x${s}/apps"
+   done
+   install -vDm755 "${srcdir}/${gives}.desktop" -t "${pkgdir}/usr/share/applications"
+   install -vDm755 "${srcdir}/LICENSE" -t "${pkgdir}/usr/share/licenses/neovide"
+diff --git a/packages/pycharm-community-bin/pycharm-community-bin.pacscript b/packages/pycharm-community-bin/pycharm-community-bin.pacscript
+index 71d051a7..724860d5 100644
+--- a/packages/pycharm-community-bin/pycharm-community-bin.pacscript
++++ b/packages/pycharm-community-bin/pycharm-community-bin.pacscript
+@@ -9,19 +9,10 @@ source=(
+ )
+ sha256sums=(
+   "3a35e0b2245e6ecad5dc05b0fc81cf36cb4f5fe0bc987c8559e04c808de9d072"
+-  "SKIP"
++  "0367fc67c51d5d99fd64a5184b8acb2dbed4a56bb26eecdcf25a2414f2233c04"
+ )
+-desktop_file_sum="0367fc67c51d5d99fd64a5184b8acb2dbed4a56bb26eecdcf25a2414f2233c04"
+ repology=("project: pycharm")
+ 
+-prepare() {
+-  cd "${_archive}"
+-  if [[ "$(sha256sum ${srcdir}/pycharm.desktop | cut -d' ' -f 1)" != "${desktop_file_sum}" ]]; then
+-    fancy_message error "Checksum for ${srcdir}/pycharm.desktop failed"
+-    return 1
+-  fi
+-}
+-
+ package() {
+   cd "${_archive}"
+   mkdir -p "${pkgdir}/usr/share/licenses/pycharm"
+diff --git a/packages/scrcpy/scrcpy.pacscript b/packages/scrcpy/scrcpy.pacscript
+index 87db9fd6..d5831723 100644
+--- a/packages/scrcpy/scrcpy.pacscript
++++ b/packages/scrcpy/scrcpy.pacscript
+@@ -8,21 +8,18 @@ makedepends=("libavcodec-dev" "libavdevice-dev" "libavformat-dev" "libavutil-dev
+ depends=("adb" "ffmpeg" "libsdl2-2.0-0" "libusb-1.0-0")
+ replaces=("${pkgname}")
+ maintainer=("vigress8 <vig@disroot.org>")
+-source=("https://github.com/Genymobile/${pkgname}/archive/refs/tags/v${pkgver}.tar.gz")
+-server_url="https://github.com/Genymobile/${pkgname}/releases/download/v${pkgver}/${pkgname}-server-v${pkgver}"
+-sha256sums=("60596f6d4c11163083da3e6805666326873ed57f7defd8a20256b928a1d3503b")
+-server_hash="93c272b7438605c055e127f7444064ed78fa9ca49f81156777fd201e79ce7ba3"
++source=(
++  "https://github.com/Genymobile/${pkgname}/archive/refs/tags/v${pkgver}.tar.gz"
++  "${pkgname}-server::https://github.com/Genymobile/${pkgname}/releases/download/v${pkgver}/${pkgname}-server-v${pkgver}"
++)
++sha256sums=(
++  "60596f6d4c11163083da3e6805666326873ed57f7defd8a20256b928a1d3503b"
++  "93c272b7438605c055e127f7444064ed78fa9ca49f81156777fd201e79ce7ba3"
++)
+ 
+ prepare() {
+   cd "${_archive}"
+-  fancy_message info "Downloading ${pkgname}-server"
+-  curl -L# -o "${pkgname}-server" "${server_url}"
+-  if [[ $(sha256sum "${pkgname}-server" | awk '{print $1}') != "${server_hash}" ]]; then
+-    fancy_message error "Integrity check failed for ${pkgname}-server"
+-    return 1
+-  fi
+-
+-  meson setup build --buildtype=release --strip -Db_lto=true -Dprebuilt_server="${pkgname}-server"
++  meson setup build --buildtype=release --strip -Db_lto=true -Dprebuilt_server="${srcdir}/${pkgname}-server"
+ }
+ 
+ build() {
+diff --git a/packages/sidequest-bin/sidequest-bin.pacscript b/packages/sidequest-bin/sidequest-bin.pacscript
+index 5423be8f..22831618 100644
+--- a/packages/sidequest-bin/sidequest-bin.pacscript
++++ b/packages/sidequest-bin/sidequest-bin.pacscript
+@@ -2,12 +2,17 @@ pkgname="sidequest-bin"
+ gives="sidequest"
+ pkgdesc="Place to get more apps for your Oculus Quest by sideloading"
+ pkgver="0.10.36"
+-source=("https://github.com/SideQuestVR/SideQuest/releases/download/v${pkgver}/SideQuest-${pkgver}.tar.xz")
++source=(
++  "https://github.com/SideQuestVR/SideQuest/releases/download/v${pkgver}/SideQuest-${pkgver}.tar.xz"
++  "${gives}.png::https://sidequestvr.com/assets/images/score-logo.png"
++)
+ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
+-sha256sums=("8228904ed14a4a67038c18be349056b7e7ad713537536473a00a0744ed061fd1")
++sha256sums=(
++  "8228904ed14a4a67038c18be349056b7e7ad713537536473a00a0744ed061fd1"
++  "SKIP"
++)
+ arch=('amd64')
+ repology=("project: sidequest")
+-__icon_url="https://sidequestvr.com/assets/images/score-logo.png"
+ 
+ package() {
+   cd "${srcdir}"
+@@ -15,8 +20,7 @@ package() {
+   mkdir -p "${pkgdir}/opt/sidequest"
+   cp -r "SideQuest-${pkgver}"/* "${pkgdir}/opt/sidequest"
+   # Install the icon for the desktop file
+-  wget -q -O "${gives}.png" "${__icon_url}"
+-  install -Dm644 "${gives}.png" "${pkgdir}/usr/share/pixmaps/${gives}.png"
++  install -Dm644 "${srcdir}/${gives}.png" "${pkgdir}/usr/share/pixmaps/${gives}.png"
+ 
+   # Install the desktop file
+   mkdir -p "${pkgdir}/usr/share/applications/"
+diff --git a/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript b/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
+index c334c90f..f5140bc1 100644
+--- a/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
++++ b/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
+@@ -14,6 +14,12 @@ source=(
+   "Space_Cadet.rar::https://archive.org/download/SpaceCadet_Plus95/Space_Cadet.rar"
+   "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${gives}.desktop"
+ )
++noextract=("Space_Cadet.rar")
++sha256sums=(
++  "SKIP"
++  "3cc5dfd914c2ac41b03f006c7ccbb59d6f9e4c32ecfd1906e718c8e47f130f4a"
++  "6edc9d9e73f430b025d0efe09ecd9027d38f7c2e3562de470a8057939fb1889f"
++)
+ pkgver="2.0.1"
+ depends=("timidity" "freepats" "libsdl2-2.0-0" "libsdl2-mixer-2.0-0")
+ makedepends=("libsdl2-dev" "libsdl2-mixer-dev" "unrar" "cmake")
+@@ -21,14 +27,6 @@ breaks=("${gives}" "${gives}-bin" "${gives}-app" "${gives}-deb")
+ 
+ prepare() {
+   cd "${_archive}"
+-  # Download game data file
+-
+-  # Check checksum
+-  if [[ $(sha256sum ./Space_Cadet.rar | cut -d" " -f 1) != "3cc5dfd914c2ac41b03f006c7ccbb59d6f9e4c32ecfd1906e718c8e47f130f4a" ]]; then
+-    fancy_message error "Downloading game data file failed. Checksum mismatch"
+-    return 1
+-  fi
+-
+   unrar e -y ${srcdir}/Space_Cadet.rar Space_Cadet/
+ }
+ 
+@@ -67,11 +65,6 @@ END
+   # Install icon
+   install -Dm644 "SpaceCadetPinball/Icon_1.ico" "${pkgdir}/usr/lib/${gives}/icon.ico"
+ 
+-
+-  if [[ $(sha256sum ./"${gives}".desktop | cut -d" " -f 1) != "6edc9d9e73f430b025d0efe09ecd9027d38f7c2e3562de470a8057939fb1889f" ]]; then
+-    fancy_message error "Downloading desktop file failed. Checksum mismatch"
+-    return 1
+-  fi
+   # Install desktop launcher
+   install -Dm644 "${srcdir}/${gives}.desktop" -t "${pkgdir}/usr/share/applications"
+ }
+@@ -81,9 +74,3 @@ post_remove() {
+ }
+ 
+ # vim:set ft=sh ts=2 sw=2 et:
+-
+-sha256sums=(
+-  "SKIP"
+-  "SKIP"
+-  "SKIP"
+-)
+diff --git a/packages/tutanota-app/tutanota-app.pacscript b/packages/tutanota-app/tutanota-app.pacscript
+index 33570911..4bafeb49 100644
+--- a/packages/tutanota-app/tutanota-app.pacscript
++++ b/packages/tutanota-app/tutanota-app.pacscript
+@@ -6,17 +6,15 @@ pkgver="218.240227.0"
+ pkgdesc="Tutanota is the world's most secure email service, easy to use and private by design."
+ source=(
+   "https://mail.tutanota.com/desktop/tutanota-desktop-linux.AppImage"
+-  "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${gives}.desktop"
+-  "${gives}.png::${__icon_url}"
++  "${gives}.desktop"
++  "${gives}.png::https://icons-for-free.com/download-icon-super+tiny+icons+tutanota-1324450784669328293_256.png"
+ )
+-__icon_url="https://icons-for-free.com/download-icon-super+tiny+icons+tutanota-1324450784669328293_256.png"
+-__icon_hash="e76f83c33cab7c3b1e7d4c827927e0c883bc7f41cb2e2f3ce7d493cd96970d76"
+ breaks=("${gives}-deb" "${gives}-bin" "${gives}-git" "${gives}")
+ replaces=("${gives}")
+ sha256sums=(
+   "2acd38e99da3c9c39beb7ab7835ea726b1e9687d05247f9cf9919395d7c79652"
+   "SKIP"
+-  "SKIP"
++  "e76f83c33cab7c3b1e7d4c827927e0c883bc7f41cb2e2f3ce7d493cd96970d76"
+ )
+ repology=("project: tutanota" "repo: homebrew_casks")
+ 
+@@ -27,14 +25,6 @@ package() {
+   install -Dm755 "tutanota-desktop-linux.AppImage" "${pkgdir}/usr/bin/${gives}"
+ 
+   if ask "\nTutanota creates its own desktop file during the first launch.\nDo you want to create a desktop file anyway?" N; then
+-    # Download icon
+-    actual_icon_hash="$(sha256sum "${srcdir}/${gives}.png" | grep -o "[a-z0-9]*" | head -1)"
+-
+-    # Check hash
+-    if [[ ${__icon_hash} != "${actual_icon_hash}" ]]; then
+-      echo "Error! Tutanota icon hash mismatch"
+-      return 1
+-    fi
+ 
+     # Install .desktop file
+     install -Dm644 "${srcdir}/${gives}.png" "${pkgdir}/usr/share/pixmaps/${gives}.png"
+diff --git a/packages/wine-staging-git/wine-staging-git.pacscript b/packages/wine-staging-git/wine-staging-git.pacscript
+index 52c46397..5ba6c734 100644
+--- a/packages/wine-staging-git/wine-staging-git.pacscript
++++ b/packages/wine-staging-git/wine-staging-git.pacscript
+@@ -1,13 +1,17 @@
+ pkgname="wine-staging-git"
+ source=(
+   "https://github.com/wine-mirror/wine.git"
+-  "libgstreamer-plugins-base1.0-dev_1.20.1-1_i386.deb::http://mirrors.kernel.org/ubuntu/pool/main/g/gst-plugins-base1.0/libgstreamer-plugins-base1.0-dev_1.20.1-1_i386.deb"
+   "30-win32-aliases.conf::https://aur.archlinux.org/cgit/aur.git/plain/30-win32-aliases.conf?h=wine-git"
+   "wine-binfmt.conf::https://aur.archlinux.org/cgit/aur.git/plain/wine-binfmt.conf?h=wine-git"
+ )
++sha256sums=(
++  "SKIP"
++  "SKIP"
++  "SKIP"
++)
+ pkgver="8.13"
+ makedepends=("libasound2-dev" "libpulse-dev" "libdbus-1-dev" "libfontconfig-dev" "libfreetype-dev" "libgnutls28-dev" "libjpeg-turbo8-dev" "libpng-dev" "libtiff-dev" "libgl-dev" "libunwind-dev" "libxml2-dev" "libxslt1-dev" "libfaudio-dev" "libgstreamer1.0-dev" "libgstreamer-plugins-base1.0-dev" "libmpg123-dev" "libjxr-dev" "libosmesa6-dev" "libsdl2-dev" "libudev-dev" "libvkd3d-dev" "libvulkan-dev" "gcc-mingw-w64" "gcc-multilib" "g++-multilib" "flex" "bison" "libx11-dev" "libx11-dev:i386" "xorg-dev" "libfreetype-dev:i386" "oss4-dev" "libasound2-dev:i386" "libpulse-dev:i386" "libdbus-1-dev:i386" "libfontconfig-dev:i386" "libfreetype-dev:i386" "libgnutls28-dev:i386" "libjpeg-turbo8-dev:i386" "libpng-dev:i386" "libtiff-dev:i386" "libgl-dev:i386" "libunwind-dev:i386" "libxml2-dev:i386" "libxslt1-dev:i386" "libgstreamer1.0-dev:i386" "libmpg123-dev:i386" "libosmesa6-dev:i386" "libsdl2-dev:i386" "libudev-dev:i386" "libvulkan-dev:i386" "libx11-dev:i386")
+-depends=("software-properties-common" "debconf" "git-core" "libjpeg-turbo8:i386" "libasound2" "libasound2:i386" "libpulse0" "libpulse0:i386" "libdbus-1-3" "libdbus-1-3:i386" "libfontconfig1" "libfontconfig1:i386" "libfreetype6" "libfreetype6:i386" "libgnutls30" "libgnutls30:i386" "libpng-tools" "libpng16-16" "libpng16-16:i386" "libtiff5" "libtiff5:i386" "libgl1" "libgl1:i386" "libunwind8" "libunwind8:i386" "libxml2" "libxml2:i386" "libxml2-utils" "libxslt1.1" "libxslt1.1:i386" "libfaudio0" "libfaudio0:i386" "libgstreamer1.0-0" "libgstreamer1.0-0:i386" "libgstreamer-plugins-base1.0-0" "libgstreamer-plugins-base1.0-0:i386" "libmpg123-0" "libmpg123-0:i386" "libosmesa6" "libosmesa6:i386" "libsdl2-2.0-0" "libsdl2-2.0-0:i386" "libudev1" "libudev1:i386" "libvkd3d1" "libvkd3d1:i386" "libvulkan1" "libvulkan1:i386" "libjxr-tools" "libjxr0" "libx11-6" "libx11-6:i386" "xorg" "oss4-base")
++depends=("software-properties-common" "debconf" "git-core" "libjpeg-turbo8:i386" "libasound2" "libasound2:i386" "libpulse0" "libpulse0:i386" "libdbus-1-3" "libdbus-1-3:i386" "libfontconfig1" "libfontconfig1:i386" "libfreetype6" "libfreetype6:i386" "libgnutls30" "libgnutls30:i386" "libpng-tools" "libpng16-16" "libpng16-16:i386" "libtiff5" "libtiff5:i386" "libgl1" "libgl1:i386" "libunwind8" "libunwind8:i386" "libxml2" "libxml2:i386" "libxml2-utils" "libxslt1.1" "libxslt1.1:i386" "libfaudio0" "libfaudio0:i386"  "libgstreamer-plugins-base1.0-dev:i386" "libgstreamer1.0-0" "libgstreamer1.0-0:i386" "libgstreamer-plugins-base1.0-0" "libgstreamer-plugins-base1.0-0:i386" "libmpg123-0" "libmpg123-0:i386" "libosmesa6" "libosmesa6:i386" "libsdl2-2.0-0" "libsdl2-2.0-0:i386" "libudev1" "libudev1:i386" "libvkd3d1" "libvkd3d1:i386" "libvulkan1" "libvulkan1:i386" "libjxr-tools" "libjxr0" "libx11-6" "libx11-6:i386" "xorg" "oss4-base")
+ breaks=("wine" "wine64" "wine32:i386" "libwine" "libwine:i386" "wine-staging-i386:i386")
+ replaces=("wine" "wine64" "wine32:i386" "libwine" "libwine:i386" "wine-staging-i386:i386")
+ pkgdesc="Wine is a program which allows running Microsoft Windows programs (including DOS, Windows 3.x, Win32, and Win64 executables) on Unix. It consists of a program loader which loads and executes a Microsoft Windows binary, and a library (called Winelib) that implements Windows API calls using their Unix, X11 or Mac equivalents.  The library may also be used for porting Windows code into native Unix executables."
+@@ -49,7 +53,6 @@ prepare() {
+   export PKG_CONFIG_PATH="/usr/lib/x86_64-linux-gnu/pkgconfig:/usr/lib/pkgconfig:/usr/share/pkgconfig:/usr/lib/i386-linux-gnu/pkgconfig:/usr/lib32/pkgconfig"
+   mkdir "wine64-build"
+   mkdir "wine32-build"
+-  apt install -y "./libgstreamer-plugins-base1.0-dev_1.20.1-1_i386.deb"
+ }
+ 
+ build() {
+@@ -91,18 +94,11 @@ package() {
+     install
+ 
+   install -d -m755 "${pkgdir}/usr/share/fontconfig/conf.default"
+-  install -D -m644 "./30-win32-aliases.conf" -t "${pkgdir}/usr/share/fontconfig/conf.avail"
+-  install -D -m644 "./30-win32-aliases.conf" -t "${pkgdir}/usr/share/fontconfig/conf.default/30-win32-aliases.conf"
++  install -D -m644 "${srcdir}/30-win32-aliases.conf" "${pkgdir}/usr/share/fontconfig/conf.avail"
++  install -D -m644 "${srcdir}/30-win32-aliases.conf" "${pkgdir}/usr/share/fontconfig/conf.default/30-win32-aliases.conf"
+ 
+-  install -D -m644 "./wine-binfmt.conf" "${pkgdir}/usr/lib/binfmt.d/wine.conf"
++  install -D -m644 "${srcdir}/wine-binfmt.conf" "${pkgdir}/usr/lib/binfmt.d/wine.conf"
+ 
+   i686-w64-mingw32-strip --strip-unneeded "${pkgdir}/usr/lib32/wine/i386-windows"/*.dll
+   x86_64-w64-mingw32-strip --strip-unneeded "${pkgdir}/usr/lib/wine/x86_64-windows"/*.dll
+ }
+-
+-sha256sums=(
+-  "SKIP"
+-  "SKIP"
+-  "SKIP"
+-  "SKIP"
+-)
+-- 
+2.39.0
+
