@@ -1,6 +1,6 @@
-From 5e9453d65e415bde3145f58525486d3c46deea4d Mon Sep 17 00:00:00 2001
+From ff080885e1ceaefb778f87ac40f87de819d8f90d Mon Sep 17 00:00:00 2001
 From: ook37 <oren+12345@taumoda.com>
-Date: Wed, 3 Apr 2024 02:44:00 -0400
+Date: Wed, 10 Apr 2024 15:11:06 -0400
 Subject: [PATCH] refactor(*)!: clean up remaining conversions
 
 ---
@@ -12,7 +12,7 @@ Subject: [PATCH] refactor(*)!: clean up remaining conversions
  packages/doas-git/doas-git.pacscript          | 23 ++--------
  packages/endlessh-git/endlessh-git.pacscript  | 18 ++------
  packages/ffsend-bin/ffsend-bin.pacscript      | 31 ++++++++------
- .../firefox-developer-edition-bin.pacscript   |  3 +-
+ .../firefox-developer-edition-bin.pacscript   |  5 +--
  packages/goverlay-bin/goverlay-bin.pacscript  | 12 ++++--
  packages/goverlay/goverlay.pacscript          | 12 ++++--
  .../intellij-idea-community-bin.pacscript     | 13 +-----
@@ -29,7 +29,7 @@ Subject: [PATCH] refactor(*)!: clean up remaining conversions
  .../unicorn-mobile-git.pacscript              | 10 +----
  .../wine-staging-git.pacscript                | 22 ++++------
  .../xdg-desktop-portal-hyprland.pacscript     | 14 ++++---
- 25 files changed, 187 insertions(+), 237 deletions(-)
+ 25 files changed, 188 insertions(+), 238 deletions(-)
 
 diff --git a/packages/amfora-bin/amfora-bin.pacscript b/packages/amfora-bin/amfora-bin.pacscript
 index 7107113b..ad8da1a3 100644
@@ -314,14 +314,16 @@ index b1e6379b..7993a974 100644
 +  install -Dm644 "${srcdir}/LICENSE" "${pkgdir}/usr/share/licenses/${gives}/LICENSE"
  }
 diff --git a/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript b/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
-index ebfac901..c03ab09d 100644
+index ebfac901..49ac5ffa 100644
 --- a/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
 +++ b/packages/firefox-developer-edition-bin/firefox-developer-edition-bin.pacscript
-@@ -6,7 +6,7 @@ pkgdesc="The browser made for developers. All the latest developer tools in beta
+@@ -5,8 +5,8 @@ pkgver="122.0b9"
+ pkgdesc="The browser made for developers. All the latest developer tools in beta, plus experimental features like the Multi-line Console Editor and WebSocket Inspector."
  source=(
    "https://download-installer.cdn.mozilla.net/pub/devedition/releases/${pkgver}/linux-x86_64/en-US/firefox-${pkgver}.tar.bz2"
-   "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${gives}.desktop"
+-  "${gives}.desktop::https://raw.githubusercontent.com/pacstall/pacstall-programs/master/packages/${pkgname}/${gives}.desktop"
 -  "${gives}.png::${__icon_url}"
++  "${gives}.desktop"
 +  "${gives}.png::https://www.mozilla.org/media/img/structured-data/logo-firefox-developer.8aedc8028e4d.png"
  )
  homepage='https://www.mozilla.org/en-US/firefox/developer/'
