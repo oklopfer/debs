@@ -240,7 +240,7 @@ with open("packagelist", 'r') as plist:
         subst(ppath, r'^url=(.*)', r'source=(\1)')
         subst(ppath, r'^hash=(.*)', r'sha256sums=(\1)')
         subst(ppath, r'\ \ url=(.*)', r'  source=(\1)')
-        subst(ppath, r'\\$\{url(?<!\_)', r'\${source[0]')
+        subst(ppath, r'\\$\{url\/', r'\${source[0]/')
         subst(ppath, r'\ \ hash=(.*)', r'  sha256sums=(\1)')
         subst(ppath, r'^maintainer=(.*)', r'maintainer=(\1)')
         subst(ppath, r'^replace=\((.*)\)', r'replaces=(\1)')
