@@ -1,38 +1,50 @@
-From ff080885e1ceaefb778f87ac40f87de819d8f90d Mon Sep 17 00:00:00 2001
+From f63c63e42c3a5d043a761367296738ae612a654e Mon Sep 17 00:00:00 2001
 From: ook37 <oren+12345@taumoda.com>
-Date: Wed, 10 Apr 2024 15:11:06 -0400
+Date: Thu, 11 Apr 2024 03:48:03 -0400
 Subject: [PATCH] refactor(*)!: clean up remaining conversions
 
 ---
- packages/amfora-bin/amfora-bin.pacscript      | 16 +------
+ packages/amfora-bin/amfora-bin.pacscript      | 20 ++-------
  .../android-studio-canary.pacscript           | 12 ++++--
  .../android-studio/android-studio.pacscript   | 12 ++++--
+ packages/ani-cli-bin/ani-cli-bin.pacscript    |  2 +-
  packages/aseprite/aseprite.pacscript          | 20 ++++-----
  packages/bazecor-app/bazecor-app.pacscript    | 12 ++++--
  packages/doas-git/doas-git.pacscript          | 23 ++--------
- packages/endlessh-git/endlessh-git.pacscript  | 18 ++------
+ packages/endlessh-git/endlessh-git.pacscript  | 20 +++------
  packages/ffsend-bin/ffsend-bin.pacscript      | 31 ++++++++------
  .../firefox-developer-edition-bin.pacscript   |  5 +--
+ .../gfn-electron-bin.pacscript                |  2 +-
+ .../github-desktop-deb.pacscript              |  1 -
+ packages/go-task-deb/go-task-deb.pacscript    |  1 -
  packages/goverlay-bin/goverlay-bin.pacscript  | 12 ++++--
  packages/goverlay/goverlay.pacscript          | 12 ++++--
- .../intellij-idea-community-bin.pacscript     | 13 +-----
+ packages/hakuneko-deb/hakuneko-deb.pacscript  |  1 -
+ .../intellij-idea-community-bin.pacscript     | 15 ++-----
  packages/krita-app/krita-app.pacscript        | 14 ++++---
+ packages/lsd-deb/lsd-deb.pacscript            |  1 -
  .../lunarclient-app/lunarclient-app.pacscript | 42 ++++++-------------
+ .../minecraft-launcher.pacscript              |  4 +-
  .../minecraft-pi-reborn-app.pacscript         | 20 ++++++---
  packages/mymonero-app/mymonero-app.pacscript  | 14 ++++---
  packages/neovide-bin/neovide-bin.pacscript    | 17 ++++----
- .../pycharm-community-bin.pacscript           | 11 +----
+ packages/postman-bin/postman-bin.pacscript    |  2 +-
+ .../pycharm-community-bin.pacscript           | 13 +-----
  packages/scrcpy/scrcpy.pacscript              | 21 ++++------
  .../sidequest-bin/sidequest-bin.pacscript     | 14 ++++---
- .../spacecadetpinball-git.pacscript           | 25 +++--------
+ .../spacecadetpinball-git.pacscript           | 27 ++++--------
+ .../tidal-hifi-bin/tidal-hifi-bin.pacscript   |  4 +-
  packages/tutanota-app/tutanota-app.pacscript  | 16 ++-----
  .../unicorn-mobile-git.pacscript              | 10 +----
+ packages/vscode-deb/vscode-deb.pacscript      |  1 -
+ .../vscode-insiders-deb.pacscript             |  1 -
  .../wine-staging-git.pacscript                | 22 ++++------
  .../xdg-desktop-portal-hyprland.pacscript     | 14 ++++---
- 25 files changed, 188 insertions(+), 238 deletions(-)
+ packages/zoxide-deb/zoxide-deb.pacscript      |  1 -
+ 37 files changed, 201 insertions(+), 258 deletions(-)
 
 diff --git a/packages/amfora-bin/amfora-bin.pacscript b/packages/amfora-bin/amfora-bin.pacscript
-index 7107113b..ad8da1a3 100644
+index 7107113b..3879b0f0 100644
 --- a/packages/amfora-bin/amfora-bin.pacscript
 +++ b/packages/amfora-bin/amfora-bin.pacscript
 @@ -5,8 +5,8 @@ breaks=("${gives}" "${gives}-git" "${gives}-deb" "${gives}-app")
@@ -46,7 +58,7 @@ index 7107113b..ad8da1a3 100644
  )
  source=(
    "https://github.com/makeworld-the-better-one/amfora/releases/download/v${pkgver}/amfora_${pkgver}_linux_64-bit"
-@@ -16,18 +16,6 @@ source=(
+@@ -16,21 +16,9 @@ source=(
  maintainer=("Elsie19 <elsie19@pm.me>")
  repology=("project: ${gives}")
  
@@ -64,7 +76,12 @@ index 7107113b..ad8da1a3 100644
 -
  package() {
    cd "${_archive}"
-   install -Dm644 ${srcdir}/amfora.png "${pkgdir}/usr/share/pixmaps/amfora.png"
+-  install -Dm644 ${srcdir}/amfora.png "${pkgdir}/usr/share/pixmaps/amfora.png"
+-  install -Dm644 ${srcdir}/amfora.desktop "${pkgdir}/usr/share/applications/amfora.desktop"
++  install -Dm644 "${srcdir}"/amfora.png "${pkgdir}/usr/share/pixmaps/amfora.png"
++  install -Dm644 "${srcdir}"/amfora.desktop "${pkgdir}/usr/share/applications/amfora.desktop"
+   install -Dm755 "amfora_${pkgver}_linux_64-bit" "${pkgdir}/usr/bin/${gives}"
+ }
 diff --git a/packages/android-studio-canary/android-studio-canary.pacscript b/packages/android-studio-canary/android-studio-canary.pacscript
 index 15eafef3..d8829d7b 100644
 --- a/packages/android-studio-canary/android-studio-canary.pacscript
@@ -129,6 +146,19 @@ index 2617f970..816530e3 100644
  
    install -Dm644 bin/studio.png "${pkgdir}/usr/share/pixmaps/${pkgname}.png"
    chmod -R ugo+rX "${pkgdir}/opt"
+diff --git a/packages/ani-cli-bin/ani-cli-bin.pacscript b/packages/ani-cli-bin/ani-cli-bin.pacscript
+index 8502d399..5d1c52de 100644
+--- a/packages/ani-cli-bin/ani-cli-bin.pacscript
++++ b/packages/ani-cli-bin/ani-cli-bin.pacscript
+@@ -17,7 +17,7 @@ maintainer=("Elsie19 <elsie19@pm.me>")
+ prepare() {
+   cd "${_archive}"
+   chmod +x ani-cli
+-  gzip -9n ${srcdir}/ani-cli.1
++  gzip -9n "${srcdir}"/ani-cli.1
+ }
+ 
+ package() {
 diff --git a/packages/aseprite/aseprite.pacscript b/packages/aseprite/aseprite.pacscript
 index 50cbcc31..38dd2c5f 100644
 --- a/packages/aseprite/aseprite.pacscript
@@ -233,7 +263,7 @@ index 5d90585d..abecb72d 100644
    cd "${_archive}"
    make -j"${NCPU}"
 diff --git a/packages/endlessh-git/endlessh-git.pacscript b/packages/endlessh-git/endlessh-git.pacscript
-index 0f8bbfc4..a8cf33d9 100644
+index 0f8bbfc4..17823f15 100644
 --- a/packages/endlessh-git/endlessh-git.pacscript
 +++ b/packages/endlessh-git/endlessh-git.pacscript
 @@ -5,19 +5,14 @@ source=(
@@ -260,6 +290,15 @@ index 0f8bbfc4..a8cf33d9 100644
  build() {
    cd "${_archive}"
    make -j"${NCPU}"
+@@ -28,7 +23,7 @@ package() {
+   make install DESTDIR="${pkgdir}"
+   install -Dm644 README.md -t "${pkgdir}/usr/share/doc/${gives}"
+   install -Dm644 UNLICENSE -t "${pkgdir}/usr/share/licenses/${gives}"
+-  install -Dm644 ${srcdir}/sample-config "${pkgdir}/etc/endlessh/config"
++  install -Dm644 "${srcdir}"/sample-config "${pkgdir}/etc/endlessh/config"
+ }
+ 
+ post_remove() {
 @@ -36,8 +31,3 @@ post_remove() {
    sudo rm -rf "/usr/share/doc/${gives}"
  }
@@ -336,6 +375,37 @@ index ebfac901..49ac5ffa 100644
  
  package() {
    cd "${srcdir}"
+diff --git a/packages/gfn-electron-bin/gfn-electron-bin.pacscript b/packages/gfn-electron-bin/gfn-electron-bin.pacscript
+index 977108ab..22feafad 100644
+--- a/packages/gfn-electron-bin/gfn-electron-bin.pacscript
++++ b/packages/gfn-electron-bin/gfn-electron-bin.pacscript
+@@ -18,7 +18,7 @@ depends=("libatk-bridge2.0-0" "libatspi2.0-0" "libgtk-3-0" "libnspr4" "libnss3"
+ package() {
+   cd "${_archive}"
+   # Get icon from github and install it
+-  install -Dm644 ${srcdir}/icon.png "${pkgdir}/usr/share/pixmaps/nvidia.png"
++  install -Dm644 "${srcdir}"/icon.png "${pkgdir}/usr/share/pixmaps/nvidia.png"
+ 
+   # Install desktop file
+   install -Dm644 "${srcdir}/com.github.hmlendea.${gives}.desktop" -t "${pkgdir}/usr/share/applications"
+diff --git a/packages/github-desktop-deb/github-desktop-deb.pacscript b/packages/github-desktop-deb/github-desktop-deb.pacscript
+index 8e38360d..cb71544c 100644
+--- a/packages/github-desktop-deb/github-desktop-deb.pacscript
++++ b/packages/github-desktop-deb/github-desktop-deb.pacscript
+@@ -10,4 +10,3 @@ maintainer=("Elsie19 <elsie19@pm.me>")
+ sha256sums_amd64=("cf3abaa7f0c0426812c38280518aadad02a420f92c2f39144231b3c0edba5a04")
+ sha256sums_arm64=("aec957d95ec694113a650395a7e71f37d469192c3364358fe5b9b6fe44ed853a")
+ sha256sums_armhf=("fd1340f570d06cdb6ef7652a49fc475ced8bbe2511af7f97359c2a7ebba2491f")
+-
+diff --git a/packages/go-task-deb/go-task-deb.pacscript b/packages/go-task-deb/go-task-deb.pacscript
+index b65e47ba..b633a9a9 100644
+--- a/packages/go-task-deb/go-task-deb.pacscript
++++ b/packages/go-task-deb/go-task-deb.pacscript
+@@ -9,4 +9,3 @@ source_amd64=("https://github.com/go-task/task/releases/download/v${pkgver}/task
+ sha256sums_amd64=("8d60fc4127347b48487d7da99ffe825dd9d2d1740dcad2a9d283d30d26925753")
+ source_arm64=("https://github.com/go-task/task/releases/download/v${pkgver}/task_linux_arm64.deb")
+ sha256sums_arm64=("d14fef178fa0afd02588154e179beef3972fe6d008f8bbfb86389671e63d6554")
+-
 diff --git a/packages/goverlay-bin/goverlay-bin.pacscript b/packages/goverlay-bin/goverlay-bin.pacscript
 index 524496bf..3c3b5e5a 100644
 --- a/packages/goverlay-bin/goverlay-bin.pacscript
@@ -392,8 +462,17 @@ index 07def2f9..a7077c20 100644
 -  wget -q https://raw.githubusercontent.com/benjamimgois/goverlay/master/data/icons/128x128/goverlay.png -P "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
 +  install -Dm644 "${srcdir}/goverlay.png" -t "${pkgdir}/usr/share/icons/hicolor/128x128/apps/"
  }
+diff --git a/packages/hakuneko-deb/hakuneko-deb.pacscript b/packages/hakuneko-deb/hakuneko-deb.pacscript
+index f0b7b772..7b73c91b 100644
+--- a/packages/hakuneko-deb/hakuneko-deb.pacscript
++++ b/packages/hakuneko-deb/hakuneko-deb.pacscript
+@@ -15,4 +15,3 @@ source_armhf=("https://github.com/manga-download/hakuneko/releases/download/nigh
+ sha256sums_armhf=("4dabbfa9d775da72499f594bfdda86adc62a5caaa579c73b9d4ccf5d778c903d")
+ source_i386=("https://github.com/manga-download/hakuneko/releases/download/nightly-${nightly}/hakuneko-desktop_${pkgver}_linux_${CARCH}.deb")
+ sha256sums_i386=("3608ff4e8a3257fffedfa2dcea6501cb6d0d203235a2e4c6e6bbf01b93dce240")
+-
 diff --git a/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript b/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
-index 4247d1ef..e4bd33ed 100644
+index 4247d1ef..9e498f6c 100644
 --- a/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
 +++ b/packages/intellij-idea-community-bin/intellij-idea-community-bin.pacscript
 @@ -7,11 +7,11 @@ pkgdesc="IntelliJ IDEA is an IDE for developing computer software written in Jav
@@ -426,6 +505,15 @@ index 4247d1ef..e4bd33ed 100644
  
  package() {
    cd "${_archive}"
+@@ -41,7 +32,7 @@ package() {
+   cp -dr --no-preserve='ownership' bin jbr lib plugins "${pkgdir}/usr/share/intellij-idea-community/"
+   cp -dr --no-preserve='ownership' license "${pkgdir}/usr/share/licenses/intellij-idea-community/"
+   cp -dr "${pkgdir}/usr/share/intellij-idea-community/bin/idea.png" "${pkgdir}/usr/share/pixmaps/"
+-  install -Dm 644 ${srcdir}/intellij-idea-community.desktop -t "${pkgdir}"/usr/share/applications/
++  install -Dm 644 "${srcdir}"/intellij-idea-community.desktop -t "${pkgdir}"/usr/share/applications/
+   mkdir -p "${pkgdir}/usr/bin"
+   ln -s "/usr/share/intellij-idea-community/bin/idea.sh" "${pkgdir}/usr/bin/idea"
+ }
 diff --git a/packages/krita-app/krita-app.pacscript b/packages/krita-app/krita-app.pacscript
 index b8a70522..b98a03cf 100644
 --- a/packages/krita-app/krita-app.pacscript
@@ -458,6 +546,15 @@ index b8a70522..b98a03cf 100644
    mkdir -p "${pkgdir}/usr/share/applications/"
    echo "[Desktop Entry]
      Name=Krita
+diff --git a/packages/lsd-deb/lsd-deb.pacscript b/packages/lsd-deb/lsd-deb.pacscript
+index 57ca11a7..c002d35d 100644
+--- a/packages/lsd-deb/lsd-deb.pacscript
++++ b/packages/lsd-deb/lsd-deb.pacscript
+@@ -11,4 +11,3 @@ sha256sums_amd64=("488b098e9cc4bb193c10d3a9abe8b06282099ee73a3e9f7f1febd19a9d9b8
+ sha256sums_arm64=("4a0e6931823869b401a7ef3dae26e3c027aaee3c42bd62129ee2c6a93489412d")
+ source_i386=("${source[0]/i386/i686}")
+ sha256sums_i386=("3a9d7193f90cce0884edb6f1c2230ec5cf942fd122e75691fc32cf3e8f728dcb")
+-
 diff --git a/packages/lunarclient-app/lunarclient-app.pacscript b/packages/lunarclient-app/lunarclient-app.pacscript
 index 9f0c13ff..310004a7 100644
 --- a/packages/lunarclient-app/lunarclient-app.pacscript
@@ -525,6 +622,19 @@ index 9f0c13ff..310004a7 100644
      "${pkgdir}/usr/share/pixmaps/${_gives}.png"
  }
  post_install() {
+diff --git a/packages/minecraft-launcher/minecraft-launcher.pacscript b/packages/minecraft-launcher/minecraft-launcher.pacscript
+index bc63b152..7e7da74c 100644
+--- a/packages/minecraft-launcher/minecraft-launcher.pacscript
++++ b/packages/minecraft-launcher/minecraft-launcher.pacscript
+@@ -27,6 +27,6 @@ package() {
+   mkdir -p "${pkgdir}/usr/share/applications"
+   chmod +x minecraft-launcher
+   mv minecraft-launcher "${pkgdir}/usr/bin"
+-  mv ${srcdir}/minecraft-launcher.svg "${pkgdir}/usr/share/icons/hicolor/symbolic/apps"
+-  mv ${srcdir}/minecraft-launcher.desktop "${pkgdir}/usr/share/applications"
++  mv "${srcdir}"/minecraft-launcher.svg "${pkgdir}/usr/share/icons/hicolor/symbolic/apps"
++  mv "${srcdir}"/minecraft-launcher.desktop "${pkgdir}/usr/share/applications"
+ }
 diff --git a/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript b/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript
 index 336e6f4a..12387140 100644
 --- a/packages/minecraft-pi-reborn-app/minecraft-pi-reborn-app.pacscript
@@ -637,8 +747,21 @@ index 9fc9d82c..76c639d3 100644
    done
    install -vDm755 "${srcdir}/${gives}.desktop" -t "${pkgdir}/usr/share/applications"
    install -vDm755 "${srcdir}/LICENSE" -t "${pkgdir}/usr/share/licenses/neovide"
+diff --git a/packages/postman-bin/postman-bin.pacscript b/packages/postman-bin/postman-bin.pacscript
+index 64c4d6c7..8df849dd 100644
+--- a/packages/postman-bin/postman-bin.pacscript
++++ b/packages/postman-bin/postman-bin.pacscript
+@@ -18,7 +18,7 @@ depends=("libxss1" "libnss3" "libgtk-3-0")
+ package() {
+   cd "${_archive}"
+   # Get desktop file and install it
+-  install -Dm644 ${srcdir}/postman.desktop -t "${pkgdir}/usr/share/applications"
++  install -Dm644 "${srcdir}"/postman.desktop -t "${pkgdir}/usr/share/applications"
+ 
+   # Install the rest of the app
+   install -d "${pkgdir}/opt/postman/" "${pkgdir}/usr/bin"
 diff --git a/packages/pycharm-community-bin/pycharm-community-bin.pacscript b/packages/pycharm-community-bin/pycharm-community-bin.pacscript
-index 71d051a7..724860d5 100644
+index 71d051a7..0d951902 100644
 --- a/packages/pycharm-community-bin/pycharm-community-bin.pacscript
 +++ b/packages/pycharm-community-bin/pycharm-community-bin.pacscript
 @@ -9,19 +9,10 @@ source=(
@@ -662,6 +785,15 @@ index 71d051a7..724860d5 100644
  package() {
    cd "${_archive}"
    mkdir -p "${pkgdir}/usr/share/licenses/pycharm"
+@@ -30,7 +21,7 @@ package() {
+   cp -dr --no-preserve='ownership' bin jbr lib plugins "${pkgdir}/usr/share/pycharm/"
+   cp -dr --no-preserve='ownership' license "${pkgdir}/usr/share/licenses/pycharm/"
+   cp -dr "${pkgdir}/usr/share/pycharm/bin/pycharm.png" "${pkgdir}/usr/share/pixmaps/"
+-  install -Dm 644 ${srcdir}/pycharm.desktop -t "${pkgdir}"/usr/share/applications/
++  install -Dm 644 "${srcdir}"/pycharm.desktop -t "${pkgdir}"/usr/share/applications/
+   mkdir -p "${pkgdir}/usr/bin"
+   ln -s "/usr/share/pycharm/bin/pycharm.sh" "${pkgdir}/usr/bin/pycharm"
+ }
 diff --git a/packages/scrcpy/scrcpy.pacscript b/packages/scrcpy/scrcpy.pacscript
 index 87db9fd6..d5831723 100644
 --- a/packages/scrcpy/scrcpy.pacscript
@@ -733,7 +865,7 @@ index 5423be8f..22831618 100644
    # Install the desktop file
    mkdir -p "${pkgdir}/usr/share/applications/"
 diff --git a/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript b/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
-index c334c90f..f5140bc1 100644
+index c334c90f..439dac4a 100644
 --- a/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
 +++ b/packages/spacecadetpinball-git/spacecadetpinball-git.pacscript
 @@ -14,6 +14,12 @@ source=(
@@ -749,7 +881,7 @@ index c334c90f..f5140bc1 100644
  pkgver="2.0.1"
  depends=("timidity" "freepats" "libsdl2-2.0-0" "libsdl2-mixer-2.0-0")
  makedepends=("libsdl2-dev" "libsdl2-mixer-dev" "unrar" "cmake")
-@@ -21,14 +27,6 @@ breaks=("${gives}" "${gives}-bin" "${gives}-app" "${gives}-deb")
+@@ -21,15 +27,7 @@ breaks=("${gives}" "${gives}-bin" "${gives}-app" "${gives}-deb")
  
  prepare() {
    cd "${_archive}"
@@ -761,9 +893,11 @@ index c334c90f..f5140bc1 100644
 -    return 1
 -  fi
 -
-   unrar e -y ${srcdir}/Space_Cadet.rar Space_Cadet/
+-  unrar e -y ${srcdir}/Space_Cadet.rar Space_Cadet/
++  unrar e -y "${srcdir}"/Space_Cadet.rar Space_Cadet/
  }
  
+ build() {
 @@ -67,11 +65,6 @@ END
    # Install icon
    install -Dm644 "SpaceCadetPinball/Icon_1.ico" "${pkgdir}/usr/lib/${gives}/icon.ico"
@@ -786,6 +920,23 @@ index c334c90f..f5140bc1 100644
 -  "SKIP"
 -  "SKIP"
 -)
+diff --git a/packages/tidal-hifi-bin/tidal-hifi-bin.pacscript b/packages/tidal-hifi-bin/tidal-hifi-bin.pacscript
+index 104f6a3f..2935c5b2 100644
+--- a/packages/tidal-hifi-bin/tidal-hifi-bin.pacscript
++++ b/packages/tidal-hifi-bin/tidal-hifi-bin.pacscript
+@@ -20,10 +20,10 @@ depends=("libxss1" "libnss3" "libgtk-3-0")
+ package() {
+   cd "${_archive}"
+   # Get icon from github and install it
+-  install -Dm644 ${srcdir}/icon.png "${pkgdir}/usr/share/pixmaps/${gives}.png"
++  install -Dm644 "${srcdir}"/icon.png "${pkgdir}/usr/share/pixmaps/${gives}.png"
+ 
+   # Get desktop file and install it
+-  install -Dm644 ${srcdir}/tidal-hifi.desktop -t "${pkgdir}/usr/share/applications"
++  install -Dm644 "${srcdir}"/tidal-hifi.desktop -t "${pkgdir}/usr/share/applications"
+ 
+   # Install the rest of the app
+   install -d "${pkgdir}/opt/${gives}/" "${pkgdir}/usr/bin"
 diff --git a/packages/tutanota-app/tutanota-app.pacscript b/packages/tutanota-app/tutanota-app.pacscript
 index 33570911..4bafeb49 100644
 --- a/packages/tutanota-app/tutanota-app.pacscript
@@ -852,6 +1003,24 @@ index ce898dca..1016e4ed 100644
  build() {
    cd "${_archive}"
    mkdir -p "${pkgdir}/usr/share/backgrounds"
+diff --git a/packages/vscode-deb/vscode-deb.pacscript b/packages/vscode-deb/vscode-deb.pacscript
+index e3115d4c..cb6f64f9 100644
+--- a/packages/vscode-deb/vscode-deb.pacscript
++++ b/packages/vscode-deb/vscode-deb.pacscript
+@@ -13,4 +13,3 @@ source_arm64=("https://packages.microsoft.com/repos/code/pool/main/c/code/code_$
+ sha256sums_arm64=("a052f4febb6067a477977c9702a230fe21e6db62f670be3440312840c3a7a40e")
+ source_armhf=("https://packages.microsoft.com/repos/code/pool/main/c/code/code_${pkgver}-1701886704_armhf.deb")
+ sha256sums_armhf=("4e87b5d3ab155fdb1826f21a058c2a5f20b392f6d0c90a8576dc92a3fdabea1b")
+-
+diff --git a/packages/vscode-insiders-deb/vscode-insiders-deb.pacscript b/packages/vscode-insiders-deb/vscode-insiders-deb.pacscript
+index a973290f..6469cf15 100644
+--- a/packages/vscode-insiders-deb/vscode-insiders-deb.pacscript
++++ b/packages/vscode-insiders-deb/vscode-insiders-deb.pacscript
+@@ -14,4 +14,3 @@ source_arm64=("https://packages.microsoft.com/repos/code/pool/main/c/code-inside
+ sha256sums_arm64=("96148a657e7b4789fced1cf72d4f6c06a7b9bef06bd83028146a8d4108ba96cd")
+ source_armhf=("https://packages.microsoft.com/repos/code/pool/main/c/code-insiders/code-insiders_${pkgversion}-1689659148_armhf.deb")
+ sha256sums_armhf=("fd3c6be35264605b2ef1d4bb10b6ff8837abf0cdbb99c83a4620970daebf9379")
+-
 diff --git a/packages/wine-staging-git/wine-staging-git.pacscript b/packages/wine-staging-git/wine-staging-git.pacscript
 index 52c46397..5ba6c734 100644
 --- a/packages/wine-staging-git/wine-staging-git.pacscript
@@ -939,6 +1108,15 @@ index 924bcf34..7cef9e9d 100644
    meson setup build
    ninja -C build
    make -j"${NCPU}" -C hyprland-share-picker all
+diff --git a/packages/zoxide-deb/zoxide-deb.pacscript b/packages/zoxide-deb/zoxide-deb.pacscript
+index b8326b39..167ed794 100644
+--- a/packages/zoxide-deb/zoxide-deb.pacscript
++++ b/packages/zoxide-deb/zoxide-deb.pacscript
+@@ -9,4 +9,3 @@ source=("https://github.com/ajeetdsouza/zoxide/releases/download/v${pkgver}/zoxi
+ 
+ sha256sums_amd64=("81b7a762bcb8f789dfde4cac78ac34a406c6f79763f3669efbd60f65d013b2e1")
+ sha256sums_arm64=("575f520691dfd9acc1b280b0ca47f44f49bd004763b61abfb3da36f211d88215")
+-
 -- 
 2.39.0
 
