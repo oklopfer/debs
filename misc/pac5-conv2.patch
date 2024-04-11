@@ -121,7 +121,7 @@ index 2617f970..816530e3 100644
 @@ -2,10 +2,16 @@ pkgname="android-studio"
  repology=("project: ${pkgname}" "repo: aur")
  replaces=("${pkgname}" "${pkgname}-beta" "${pkgname}-canary")
- pkgver="2023.2.1.24"
+ pkgver="2023.2.1.25"
 -source=("https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${pkgname}-${pkgver}-linux.tar.gz")
 +source=(
 +  "https://dl.google.com/dl/android/studio/ide-zips/${pkgver}/${pkgname}-${pkgver}-linux.tar.gz"
@@ -129,9 +129,9 @@ index 2617f970..816530e3 100644
 +)
  depends=("libc6-i386" "lib32ncurses6" "lib32stdc++6" "lib32z1" "libbz2-1.0:i386")
  pkgdesc="Android Studio is the official integrated development environment (IDE) for Google's Android operating system, built on JetBrains' IntelliJ IDEA software and designed specifically for Android development"
--sha256sums=("0026427572849c9cbb0c94d6f9718ea08bc345dccfe3b372b54100a95fff99b5")
+-sha256sums=("cd63ead467dc92a08ff6b3695c01d57e802976fc64acddcd31cd6a2427ffa1bc")
 +sha256sums=(
-+  "0026427572849c9cbb0c94d6f9718ea08bc345dccfe3b372b54100a95fff99b5"
++  "cd63ead467dc92a08ff6b3695c01d57e802976fc64acddcd31cd6a2427ffa1bc"
 +  "SKIP"
 +)
  maintainer=("Oren Klopfer <oren@taumoda.com>")
