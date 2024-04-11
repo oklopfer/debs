@@ -994,7 +994,7 @@ index ce898dca..1016e4ed 100644
  
 -prepare() {
 -  cd "${_archive}"
--  git remote add upstream "${source[0]}"
+-  git remote add upstream "${url}"
 -  git fetch upstream
 -  git checkout upstream/mobile
 -  git config --global --add safe.directory "${PWD}"
