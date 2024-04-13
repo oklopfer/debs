@@ -168,7 +168,7 @@ index 50cbcc31..38dd2c5f 100644
  arch=("amd64")
  maintainer=("vigress8 <vig@disroot.org>")
 -source=("https://github.com/${pkgname}/${pkgname}/releases/download/v${pkgver}/Aseprite-v${pkgver}-Source.zip")
--sha256sums=("6acf1b7f5019733cd8a54d8e0504e78b2f74cdb2073f82230e543cfd990f6984")
+-sha256sums=("5e974aa2786297981cd5ebe81f040a49b722bddfe33d70def207ad06cb0d34fc")
  skiaver="m102-861e4743af"
 -skiaurl="https://github.com/${pkgname}/skia/releases/download/${skiaver}/Skia-Linux-Release-x64-libc++.zip"
 -skiahash="66293c15aa773a96121afb01f09109d3e5d455a6fd51944e0bb8bdc0829913ea"
@@ -177,7 +177,7 @@ index 50cbcc31..38dd2c5f 100644
 +  "https://github.com/${pkgname}/skia/releases/download/${skiaver}/Skia-Linux-Release-x64-libc++.zip"
 +)
 +sha256sums=(
-+  "6acf1b7f5019733cd8a54d8e0504e78b2f74cdb2073f82230e543cfd990f6984"
++  "5e974aa2786297981cd5ebe81f040a49b722bddfe33d70def207ad06cb0d34fc"
 +  "66293c15aa773a96121afb01f09109d3e5d455a6fd51944e0bb8bdc0829913ea"
 +)
 +noextract=("Skia-Linux-Release-x64-libc++.zip")
