@@ -478,12 +478,12 @@ index 4247d1ef..9e498f6c 100644
 @@ -7,11 +7,11 @@ pkgdesc="IntelliJ IDEA is an IDE for developing computer software written in Jav
  arch=('amd64' 'arm64')
  sha256sums_amd64=(
-   "5e376677d4b9810f4171700ce9d9d3ece58f245ce8d9f2011b05966df5dd7ddd"
+   "01d1b224c5e88592f954b17796a76fa8391cdcafef27264e703c7ffe47bb4065"
 -  "SKIP"
 +  "20c489d224f83cf4b29174b8c398e256b1df0e9cb0b920890f39c5796404b293"
  )
  sha256sums_arm64=(
-   "cfc98c4a09f6740ef47a3dbc8f2e71a66a8aab2eae3fb1b901c2db5dcce5f060"
+   "a13e7a53b5c8a512fbcb72957f24e5515618a5533f17d72914da5445b736dac1"
 -  "SKIP"
 +  "20c489d224f83cf4b29174b8c398e256b1df0e9cb0b920890f39c5796404b293"
  )
