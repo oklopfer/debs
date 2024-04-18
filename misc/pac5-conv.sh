@@ -245,6 +245,7 @@ with open("packagelist", 'r') as plist:
         subst(ppath, r'^maintainer=(.*)', r'maintainer=(\1)')
         subst(ppath, r'^replace=\((.*)\)', r'replaces=(\1)')
         subst(ppath, r'^homepage="(.*)"', r'url="\1"')
+        subst(ppath, r'\\$\{homepage', r'\${url')
         subst(ppath, r'SRCDIR', r'srcdir')
         subst(ppath, r'pkgname', r'gives')
         subst(ppath, r'^name="(.*)"', r'pkgname="\1"')
