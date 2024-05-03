@@ -24,14 +24,21 @@ srcinfo() {
         [[ -n ${!var} ]] && echo "${var}=\"${!var}\""
     done
     for ar in "${allars[@]}"; do
-        [[ -n ${!ar} ]] && \
-        declare -p ${ar} | sed -e 's|\\||g'
+        [[ -n ${!ar} ]] && declare -p ${ar} | sed -e 's|\\||g'
     done
     unset "${allars[@]}" "${allvars[@]}"
 }
 
-mapfile -t packagelist < packagelist
-for package in "${packagelist[@]}"; do
-    srcinfo packages/${package}/${package}.pacscript | tee packages/${package}/.SRCINFO > /dev/null
-done
-unset packagelist
+write_all() {
+    local packagelist
+    mapfile -t packagelist < packagelist
+    for package in "${packagelist[@]}"; do
+        srcinfo packages/${package}/${package}.pacscript | tee packages/${package}/.SRCINFO > /dev/null
+    done
+}
+
+[[ -z ${1} ]] && echo "You failed to specify a pacscript." && exit 1
+case ${1} in
+    "write_all") write_all ;;
+    *) srcinfo ${1} ;;
+esac
