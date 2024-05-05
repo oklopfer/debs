@@ -173,7 +173,7 @@ function update_ker() {
         stab) gitker_branch="${pkgver}s" ;;
         main) gitker_branch="${pkgver}" ;;
       esac
-      if git branch | grep "${gitker_branch}" >> /dev/null && [[ $(git rev-parse --abbrev-ref HEAD) != "${gitker_branch}" ]]; then
+      if git branch | grep "${gitker_branch/\~/}" >> /dev/null && [[ $(git rev-parse --abbrev-ref HEAD) != "${gitker_branch}" ]]; then
         git branch -D ${gitker_branch/\~/}
       fi
       git checkout -b ${gitker_branch/\~/}
@@ -209,10 +209,10 @@ function update_ker() {
       echo "new gives: ${BGreen}$gives${NC}"
     fi
 
-    hash_lines=$(grep -o 'hash=".*"' "packages/$pacscript/$pacscript.pacscript" | wc -l)
+    hash_lines=$(grep -o 'sha256sums.*=(".*")' "packages/$pacscript/$pacscript.pacscript" | wc -l)
     if ((hash_lines > 1)); then
       if [[ $package == *"arm64"* ]]; then
-        old_hash=$(perl -nle'print $& if m{(?<=hash=").*?(?=")}' "packages/$pacscript/$pacscript.pacscript" | head -1)
+        old_hash=$(perl -nle'print $1 if /sha256sums_arm64=\(\s*"([^"]*)"/' "packages/$pacscript/$pacscript.pacscript")
         if [[ "$old_hash" == "$hash" ]]; then
           echo "no arm64 hash change: ${BYellow}$hash${NC}"
         else
@@ -220,7 +220,7 @@ function update_ker() {
           echo "new arm64 hash: ${BGreen}$hash${NC}"
         fi
       elif [[ $package == *"amd64"* ]]; then
-        old_hash=$(perl -nle'print $& if m{(?<=hash=").*?(?=")}' "packages/$pacscript/$pacscript.pacscript" | tail -1)
+        old_hash=$(perl -nle'print $1 if /sha256sums_amd64=\(\s*"([^"]*)"/' "packages/$pacscript/$pacscript.pacscript")
         if [[ "$old_hash" == "$hash" ]]; then
           echo "no amd64 hash change: ${BYellow}$hash${NC}"
         else
@@ -229,7 +229,7 @@ function update_ker() {
         fi
       fi
     else
-      old_hash=$(perl -nle'print $& if m{(?<=hash=").*?(?=")}' "packages/$pacscript/$pacscript.pacscript")
+      old_hash=$(perl -nle'print $1 if /sha256sums=\(\s*"([^"]*)"/' "packages/$pacscript/$pacscript.pacscript")
       if [[ "$old_hash" == "$hash" ]]; then
         echo "no hash change: ${BYellow}$hash${NC}"
       else
@@ -249,14 +249,12 @@ function update_ker() {
       sed -i "" "s/gives=\".*\"/gives=\"$gives\"/" "packages/$pacscript/$pacscript.pacscript"
       if ((hash_lines > 1)); then
         if [[ $package == *"arm64"* ]]; then
-          awk -v hash="$hash" '/if \[\[ \${CARCH} == "arm64" \]\]; then/{c=1}
-                      c&&/hash="/{sub(/hash=".*"/, "hash=\""hash"\""); c=0} 1' "packages/$pacscript/$pacscript.pacscript" >tmpfile && mv tmpfile "packages/$pacscript/$pacscript.pacscript"
+          sed -i "" "s/sha256sums_arm64=(\".*\")/sha256sums_arm64=(\"$hash\")/" "packages/$pacscript/$pacscript.pacscript"
         elif [[ $package == *"amd64"* ]]; then
-          awk -v hash="$hash" '/else/{c=1}
-                      c&&/hash="/{sub(/hash=".*"/, "hash=\""hash"\""); c=0} 1' "packages/$pacscript/$pacscript.pacscript" >tmpfile && mv tmpfile "packages/$pacscript/$pacscript.pacscript"
+          sed -i "" "s/sha256sums_amd64=(\".*\")/sha256sums_amd64=(\"$hash\")/" "packages/$pacscript/$pacscript.pacscript"
         fi
       else
-        sed -i "" "s/hash=\".*\"/hash=\"$hash\"/" "packages/$pacscript/$pacscript.pacscript"
+        sed -i "" "s/sha256sums=(\".*\")/sha256sums=(\"$hash\")/" "packages/$pacscript/$pacscript.pacscript"
       fi
     else
       exit 1
