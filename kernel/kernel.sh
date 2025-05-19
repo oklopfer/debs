@@ -336,15 +336,17 @@ else
   update_ker
 fi
 
-unset gitker_input
+unset gitker_ext
 case ${kerselected} in
-  both) gitker_input="linux-kernel{-stable}" ;;
-  main) gitker_input="linux-kernel" ;;
-  stab) gitker_input="linux-kernel-stable" ;;
+  both) gitker_ext="{,-stable}" ;;
+  main) gitker_ext="" ;;
+  stab) gitker_ext="-stable" ;;
 esac
 
-git add packages/linux*/*pacscript
-git commit -m "upd(${gitker_input}): \`$original_old_pkgver\` -> \`$pkgver\`" && \
-if ${newbranch} && [[ -n ${gitker_remote} ]]; then
-  git push ${gitker_remote} HEAD:refs/heads/${gitker_branch/\~/}
-fi
+./scripts/srcinfo.sh add linux-{headers,headers-generic,image-unsigned,modules}{,-stable}-deb linux-kernel{,-stable} && {
+  git add packages/linux-{headers,headers-generic,image-unsigned,modules}{,-stable}-deb packages/linux-kernel{,-stable} srclist
+  git commit -m "upd(linux-kernel${gitker_ext}): \`$original_old_pkgver\` -> \`$pkgver\`" && \
+  if ${newbranch} && [[ -n ${gitker_remote} ]]; then
+    git push ${gitker_remote} HEAD:refs/heads/${gitker_branch/\~/}
+  fi
+};
